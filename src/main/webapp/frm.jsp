@@ -8,6 +8,9 @@
 </head>
 <body>
 <jsp:useBean id="frm" class="jbossews.FormBean"></jsp:useBean>
-${frm.symbLst }
+<form action="frm.jsp" method="post">
+<textarea rows="3" cols="30" name="symbLst"></textarea>
+<input type="submit"/>
+</form>
 </body>
 </html>
