@@ -1,5 +1,7 @@
 package jbossews;
 
+import java.io.ByteArrayOutputStream;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +23,24 @@ public class FormBean {
 	private String [] symArray;
 	private boolean putOption=false;
 	private boolean unique=false;
+	private boolean ready=false;
+	private ByteArrayOutputStream out;
+
+	public ByteArrayOutputStream getOut() {
+		return out;
+	}
+
+	public void setOut(ByteArrayOutputStream out) {
+		this.out = out;
+	}
+
+	public boolean getReady() {
+		return ready;
+	}
+
+	public void setReady(boolean ready) {
+		this.ready = ready;
+	}
 
 	public String getSymbLst() {
 		return symbLst;
@@ -30,12 +50,14 @@ public class FormBean {
 		this.symbLst = symbLst;
 		if (!symbLst.isEmpty()) {
 			processData();
+			
 		}
 	}
 	
 	private void processData() {
         symArray=symbLst.split("\n");
         System.out.println("nbelemA="+symArray.length);
+        ready=true;
         readQuotes();
 	}
 	
@@ -92,9 +114,9 @@ public class FormBean {
             }
             stockQuotes.add(stockQuote);
         }
-        File file = new File("test.csv");
+
         CsvWriter csvWriter = new CsvWriter();
-        csvWriter.write(stockQuotes, file,unique);
+         out = csvWriter.write(stockQuotes,unique);
         //System.out.println(nbLine + " option quotes written to file " + file.getName());
     }
         private static int addOptionQuote(List<OptionQuote> optionQuotes, StockQuote stockQuote, boolean putOption) {
