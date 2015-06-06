@@ -6,9 +6,7 @@
         javax.servlet.ServletContext,
         javax.servlet.http.HttpServlet,
         javax.servlet.http.HttpServletRequest,
-        javax.servlet.http.HttpServletResponse,
-        java.io.File,
-        java.io.FileInputStream"
+        javax.servlet.http.HttpServletResponse"
  %>
  <jsp:useBean id="frm" class="jbossews.FormBean" scope="session"></jsp:useBean>
 <%  
