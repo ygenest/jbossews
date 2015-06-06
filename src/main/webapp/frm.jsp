@@ -16,6 +16,7 @@
 
 <form action="frm.jsp" method="post">
 <textarea rows="3" cols="30" name="symbLst"></textarea>
+<input type="checkbox" name="noStrikeBelowCurrent">Show strike price below current
 <input type="submit"/>
 </form>
 ${frm.symbLst }

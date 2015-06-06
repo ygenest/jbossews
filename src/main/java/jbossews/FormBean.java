@@ -20,10 +20,20 @@ import coveredcallscreener.writers.CsvWriter;
 
 public class FormBean {
 	private String symbLst;
-	private String [] symArray;
-	private boolean putOption=false;
-	private boolean unique=false;
-	private boolean ready=false;
+	private String[] symArray;
+	private boolean putOption = false;
+	private boolean unique = false;
+	private boolean ready = false;
+	private boolean noStrikeBelowCurrent=false;
+	public boolean isNoStrikeBelowCurrent() {
+		return noStrikeBelowCurrent;
+	}
+
+	public void setNoStrikeBelowCurrent(boolean noStrikeBelowCurrent) {
+		System.out.println("nostr="+noStrikeBelowCurrent);
+		this.noStrikeBelowCurrent = noStrikeBelowCurrent;
+	}
+
 	private ByteArrayOutputStream out;
 
 	public ByteArrayOutputStream getOut() {
@@ -50,84 +60,99 @@ public class FormBean {
 		this.symbLst = symbLst;
 		if (!symbLst.isEmpty()) {
 			processData();
-			
+
 		}
 	}
-	
+
 	private void processData() {
-        symArray=symbLst.split("\n");
-        System.out.println("nbelemA="+symArray.length);
-        ready=true;
-        readQuotes();
+		symArray = symbLst.split("\n");
+		System.out.println("nbelemA=" + symArray.length);
+		ready = true;
+		CallOptionsFilter.setNoStrikeBelowCurrent(noStrikeBelowCurrent);
+		readQuotes();
 	}
-	
-    public void readQuotes() {
-        List<String> symbols = Arrays.asList(symArray);
-        GoogleStockReader googleStockReader = new GoogleStockReader();
-        TsxOptionsReader tsxOptionsReader = new TsxOptionsReader(putOption);
-        GoogleConverter googleConverter = new GoogleConverter();
-        GoogleStockJson googleStockJson;
-        List<StockQuote> stockQuotes = new ArrayList<StockQuote>();
-                int nbLine = 0;
-                System.out.println("ssslen5="+symbols.size());
-        for (String symbol : symbols) {
-            symbol = symbol.toUpperCase().trim();
-            System.out.println("sss="+symbol);
-            StockQuote stockQuote = null;
-            if (symbol.endsWith(".TO")) {
-                // process symbols for TSX exchange
-                googleStockJson = googleStockReader.readStockQuote("TSE:" + symbol.replace(".TO", ""));
-                stockQuote = googleConverter.convertStock(googleStockJson);
-                stockQuote.setSymbol(googleStockJson.getSymbol() + ":" + googleStockJson.getExchange());
-                if (stockQuote == null) {
-                    System.out.println("Skipping unknown TSX symbol " + symbol);
-                    continue;
-                }
-                List<OptionQuote> optionQuotes = tsxOptionsReader.readOptionQuote(symbol.replace(".TO", ""));
-                if (optionQuotes == null) {
-                    System.out.println("No option defined for TSX symbol " + symbol);
-                    continue;
-                } else {
-                    nbLine += addOptionQuote(optionQuotes, stockQuote, putOption);
-                }
-            } else {
-                // process symbols for US exchanges
-                googleStockJson = googleStockReader.readStockQuote(symbol);
-                if (googleStockJson == null) {
-                    System.out.println("Skipping unknown US symbol " + symbol);
-                    continue;
-                }
-                stockQuote = googleConverter.convertStock(googleStockJson);
 
-                List<Expiration> expirations = googleStockReader.readOptionExpiration(symbol);
-                if (expirations == null) {
-                    System.out.println("No option defined for US symbol " + symbol);
-                    continue;
-                }
-                for (Expiration expiration : expirations) {
-                    GoogleOptionsJson googleOptionsJson = googleStockReader.readOptionQuote(symbol, expiration);
-                    List<OptionQuote> optionQuotes = googleConverter.convertOption(googleOptionsJson, expiration);
-                    nbLine += addOptionQuote(optionQuotes, stockQuote, putOption);
+	public void readQuotes() {
+		List<String> symbols = Arrays.asList(symArray);
+		GoogleStockReader googleStockReader = new GoogleStockReader();
+		TsxOptionsReader tsxOptionsReader = new TsxOptionsReader(putOption);
+		GoogleConverter googleConverter = new GoogleConverter();
+		GoogleStockJson googleStockJson;
+		List<StockQuote> stockQuotes = new ArrayList<StockQuote>();
+		int nbLine = 0;
+		System.out.println("ssslen5=" + symbols.size());
+		for (String symbol : symbols) {
+			symbol = symbol.toUpperCase().trim();
+			System.out.println("sss=" + symbol);
+			StockQuote stockQuote = null;
+			if (symbol.endsWith(".TO")) {
+				// process symbols for TSX exchange
+				googleStockJson = googleStockReader.readStockQuote("TSE:"
+						+ symbol.replace(".TO", ""));
+				stockQuote = googleConverter.convertStock(googleStockJson);
 
-                }
+				if (stockQuote == null) {
+					System.out.println("Skipping unknown TSX symbol " + symbol);
+					continue;
+				}
+				stockQuote.setSymbol(googleStockJson.getSymbol() + ":"
+						+ googleStockJson.getExchange());
+				List<OptionQuote> optionQuotes = tsxOptionsReader
+						.readOptionQuote(symbol.replace(".TO", ""));
+				if (optionQuotes == null) {
+					System.out.println("No option defined for TSX symbol "
+							+ symbol);
+					continue;
+				} else {
+					nbLine += addOptionQuote(optionQuotes, stockQuote,
+							putOption);
+				}
+			} else {
+				// process symbols for US exchanges
+				googleStockJson = googleStockReader.readStockQuote(symbol);
+				if (googleStockJson == null) {
+					System.out.println("Skipping unknown US symbol " + symbol);
+					continue;
+				}
+				stockQuote = googleConverter.convertStock(googleStockJson);
 
-            }
-            stockQuotes.add(stockQuote);
-        }
+				List<Expiration> expirations = googleStockReader
+						.readOptionExpiration(symbol);
+				if (expirations == null) {
+					System.out.println("No option defined for US symbol "
+							+ symbol);
+					continue;
+				}
+				for (Expiration expiration : expirations) {
+					GoogleOptionsJson googleOptionsJson = googleStockReader
+							.readOptionQuote(symbol, expiration);
+					List<OptionQuote> optionQuotes = googleConverter
+							.convertOption(googleOptionsJson, expiration);
+					nbLine += addOptionQuote(optionQuotes, stockQuote,
+							putOption);
 
-        CsvWriter csvWriter = new CsvWriter();
-         out = csvWriter.write(stockQuotes,unique);
-        //System.out.println(nbLine + " option quotes written to file " + file.getName());
-    }
-        private static int addOptionQuote(List<OptionQuote> optionQuotes, StockQuote stockQuote, boolean putOption) {
-        int count = 0;
-        for (OptionQuote optionQuote : optionQuotes) {
-            optionQuote.setStockPrice(stockQuote.getLast());
-            if (CallOptionsFilter.filter(optionQuote, putOption)) {
-                stockQuote.getOptionQuotes().add(optionQuote);
-                count++;
-            }
-        }
-        return count;
-    }
+				}
+
+			}
+			stockQuotes.add(stockQuote);
+		}
+
+		CsvWriter csvWriter = new CsvWriter();
+		out = csvWriter.write(stockQuotes, unique);
+		// System.out.println(nbLine + " option quotes written to file " +
+		// file.getName());
+	}
+
+	private static int addOptionQuote(List<OptionQuote> optionQuotes,
+			StockQuote stockQuote, boolean putOption) {
+		int count = 0;
+		for (OptionQuote optionQuote : optionQuotes) {
+			optionQuote.setStockPrice(stockQuote.getLast());
+			if (CallOptionsFilter.filter(optionQuote, putOption)) {
+				stockQuote.getOptionQuotes().add(optionQuote);
+				count++;
+			}
+		}
+		return count;
+	}
 }
