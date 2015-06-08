@@ -5,19 +5,31 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Insert title here</title>
+<title>CC Screener</title>
 </head>
 <body>
 <jsp:useBean id="frm" class="jbossews.FormBean" scope="session"></jsp:useBean>
 <jsp:setProperty property="*" name="frm"/>
 <c:if test="${frm.ready}">
-	<c:redirect url="/result.jsp"></c:redirect>
+	<jsp:forward page="/result.jsp"></jsp:forward>
 </c:if>
 
 <form action="frm.jsp" method="post">
+<table>
+<tr><td>
 <textarea rows="3" cols="30" name="symbLst"></textarea>
-<input type="checkbox" name="noStrikeBelowCurrent">Show strike price below current
+</td></tr>
+<tr><td>
+Hide strike price below current (Y/N):<input type="checkbox" name="noStrikeBelowCurrent" value="Y">
+Show only the first quote (Y/N):<input type="checkbox" name="unique" value="Y">
+</td></tr>
+<tr><td>
+Expary month (YYYYMM)<input type="text" name="expMonth">
+</td></tr>
+<tr><td>
 <input type="submit"/>
+</td></tr>
+</table>
 </form>
 ${frm.symbLst }
 </body>

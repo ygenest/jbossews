@@ -22,17 +22,44 @@ public class FormBean {
 	private String symbLst;
 	private String[] symArray;
 	private boolean putOption = false;
-	private boolean unique = false;
+	private String unique = "N";
+	public String getUnique() {
+		return unique;
+	}
+
+	public void setUnique(String unique) {
+		this.unique = unique;
+	}
+
+
+
 	private boolean ready = false;
-	private boolean noStrikeBelowCurrent=false;
-	public boolean isNoStrikeBelowCurrent() {
+	private String noStrikeBelowCurrent="N";
+	private CallOptionsFilter callOptionsFilter=new CallOptionsFilter();
+
+
+
+	public String getNoStrikeBelowCurrent() {
 		return noStrikeBelowCurrent;
 	}
 
-	public void setNoStrikeBelowCurrent(boolean noStrikeBelowCurrent) {
-		System.out.println("nostr="+noStrikeBelowCurrent);
+	public void setNoStrikeBelowCurrent(String noStrikeBelowCurrent) {
 		this.noStrikeBelowCurrent = noStrikeBelowCurrent;
 	}
+
+
+
+	private String expMonth="";
+	
+	public String getExpMonth() {
+		return expMonth;
+	}
+
+	public void setExpMonth(String expMonth) {
+		this.expMonth = expMonth;
+	}
+
+
 
 	private ByteArrayOutputStream out;
 
@@ -66,10 +93,15 @@ public class FormBean {
 
 	private void processData() {
 		symArray = symbLst.split("\n");
-		System.out.println("nbelemA=" + symArray.length);
-		ready = true;
-		CallOptionsFilter.setNoStrikeBelowCurrent(noStrikeBelowCurrent);
+
+		
+		callOptionsFilter.setNoStrikeBelowCurrent(noStrikeBelowCurrent.equalsIgnoreCase("Y"));
+		if (!expMonth.isEmpty()) {
+			callOptionsFilter.setExpMonth(expMonth);
+		}
 		readQuotes();
+		setReady(true);
+
 	}
 
 	public void readQuotes() {
@@ -80,10 +112,8 @@ public class FormBean {
 		GoogleStockJson googleStockJson;
 		List<StockQuote> stockQuotes = new ArrayList<StockQuote>();
 		int nbLine = 0;
-		System.out.println("ssslen5=" + symbols.size());
 		for (String symbol : symbols) {
 			symbol = symbol.toUpperCase().trim();
-			System.out.println("sss=" + symbol);
 			StockQuote stockQuote = null;
 			if (symbol.endsWith(".TO")) {
 				// process symbols for TSX exchange
@@ -138,17 +168,17 @@ public class FormBean {
 		}
 
 		CsvWriter csvWriter = new CsvWriter();
-		out = csvWriter.write(stockQuotes, unique);
+		out = csvWriter.write(stockQuotes, unique.equalsIgnoreCase("Y"));
 		// System.out.println(nbLine + " option quotes written to file " +
 		// file.getName());
 	}
 
-	private static int addOptionQuote(List<OptionQuote> optionQuotes,
+	private  int addOptionQuote(List<OptionQuote> optionQuotes,
 			StockQuote stockQuote, boolean putOption) {
 		int count = 0;
 		for (OptionQuote optionQuote : optionQuotes) {
 			optionQuote.setStockPrice(stockQuote.getLast());
-			if (CallOptionsFilter.filter(optionQuote, putOption)) {
+			if (callOptionsFilter.filter(optionQuote, putOption)) {
 				stockQuote.getOptionQuotes().add(optionQuote);
 				count++;
 			}

@@ -17,12 +17,12 @@ import java.util.logging.Logger;
 public class CallOptionsFilter {
 
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    private static boolean noZeroInterest = false;
-    private static int percentageAboveStrike = 0;
-    private static boolean noStrikeBelowCurrent = false;
-    private static Calendar expDate;
+    private  boolean noZeroInterest = false;
+    private  int percentageAboveStrike = 0;
+    private  boolean noStrikeBelowCurrent = false;
+    private  Calendar expDate;
 
-    public static boolean filter(OptionQuote optionQuote, boolean put) {
+    public  boolean filter(OptionQuote optionQuote, boolean put) {
          if (expDate != null) {
              Date d1 = expDate.getTime();
              Date d2 = optionQuote.getExparyDate();
@@ -50,28 +50,28 @@ public class CallOptionsFilter {
     /**
      * @return the noZeroInterest
      */
-    public static boolean isNoZeroInterest() {
+    public  boolean isNoZeroInterest() {
         return noZeroInterest;
     }
 
     /**
      * @param aNoZeroInterest the noZeroInterest to set
      */
-    public static void setNoZeroInterest(boolean aNoZeroInterest) {
+    public  void setNoZeroInterest(boolean aNoZeroInterest) {
         noZeroInterest = aNoZeroInterest;
     }
 
     /**
      * @return the noStrikeBelowCurrent
      */
-    public static boolean isNoStrikeBelowCurrent() {
+    public  boolean isNoStrikeBelowCurrent() {
         return noStrikeBelowCurrent;
     }
 
     /**
      * @param aNoStrikeBelowCurrent the noStrikeBelowCurrent to set
      */
-    public static void setNoStrikeBelowCurrent(boolean aNoStrikeBelowCurrent) {
+    public  void setNoStrikeBelowCurrent(boolean aNoStrikeBelowCurrent) {
         noStrikeBelowCurrent = aNoStrikeBelowCurrent;
     }
 
@@ -92,7 +92,7 @@ public class CallOptionsFilter {
         
     }
     
-     public static void setExpMonth(String sdate) {
+     public  void setExpMonth(String sdate) {
          int year = Integer.parseInt(sdate.substring(0, 4));
          int month = Integer.parseInt(sdate.substring(4, 6)) - 1;
          Calendar c = new GregorianCalendar(year, month, 1);

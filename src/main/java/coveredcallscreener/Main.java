@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 public class Main {
 
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    
 	
 
     /**
@@ -46,7 +47,7 @@ public class Main {
         boolean invalidArg = false;
         boolean putOption = false;
         boolean unique = false;
-
+        CallOptionsFilter callOptionsFilter=new CallOptionsFilter();
         String fname = null;
         for (int i = 0; i < args.length; i++) {
             if (args[i].startsWith("-")) {
@@ -56,17 +57,17 @@ public class Main {
                         LOGGER.log(Level.INFO, "In debugging mode");
                         break;
                     case 'e':
-                        CallOptionsFilter.setExpMonth(args[i].toString().substring(2));
+                        callOptionsFilter.setExpMonth(args[i].toString().substring(2));
                         break;
 
                     case 'z':
-                        CallOptionsFilter.setNoZeroInterest(true);
+                        callOptionsFilter.setNoZeroInterest(true);
                         break;
                     case 'p':
                         putOption = true;
                         break;
                     case 's':
-                        CallOptionsFilter.setNoStrikeBelowCurrent(true);
+                        callOptionsFilter.setNoStrikeBelowCurrent(true);
                         break;
                     case 'u':
                         unique=true;
@@ -122,7 +123,7 @@ public class Main {
                     System.out.println("No option defined for TSX symbol " + symbol);
                     continue;
                 } else {
-                    nbLine += addOptionQuote(optionQuotes, stockQuote, putOption);
+                    nbLine += addOptionQuote(optionQuotes, stockQuote, putOption, callOptionsFilter);
                 }
             } else {
                 // process symbols for US exchanges
@@ -141,7 +142,7 @@ public class Main {
                 for (Expiration expiration : expirations) {
                     GoogleOptionsJson googleOptionsJson = googleStockReader.readOptionQuote(symbol, expiration);
                     List<OptionQuote> optionQuotes = googleConverter.convertOption(googleOptionsJson, expiration);
-                    nbLine += addOptionQuote(optionQuotes, stockQuote, putOption);
+                    nbLine += addOptionQuote(optionQuotes, stockQuote, putOption, callOptionsFilter);
 
                 }
 
@@ -165,11 +166,11 @@ public class Main {
         System.out.println(nbLine + " option quotes written to file " + file.getName());
     }
 
-    private static int addOptionQuote(List<OptionQuote> optionQuotes, StockQuote stockQuote, boolean putOption) {
+    private static int addOptionQuote(List<OptionQuote> optionQuotes, StockQuote stockQuote, boolean putOption, CallOptionsFilter callOptionsFilter) {
         int count = 0;
         for (OptionQuote optionQuote : optionQuotes) {
             optionQuote.setStockPrice(stockQuote.getLast());
-            if (CallOptionsFilter.filter(optionQuote, putOption)) {
+            if (callOptionsFilter.filter(optionQuote, putOption)) {
                 stockQuote.getOptionQuotes().add(optionQuote);
                 count++;
             }
