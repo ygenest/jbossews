@@ -1,11 +1,11 @@
 package jbossews;
 
 import java.io.ByteArrayOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import coveredcallscreener.converters.GoogleConverter;
 import coveredcallscreener.domain.json.option.Expiration;
@@ -19,7 +19,19 @@ import coveredcallscreener.readers.TsxOptionsReader;
 import coveredcallscreener.writers.CsvWriter;
 
 public class FormBean {
+	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	private String symbLst;
+	private String msg="";
+	public String getMsg() {
+		return msg;
+	}
+
+	public void setMsg(String msg) {
+		this.msg = msg;
+	}
+
+
+
 	private String[] symArray;
 	private boolean putOption = false;
 	private String unique = "N";
@@ -122,7 +134,7 @@ public class FormBean {
 				stockQuote = googleConverter.convertStock(googleStockJson);
 
 				if (stockQuote == null) {
-					System.out.println("Skipping unknown TSX symbol " + symbol);
+					msg=msg+"Skipping unknown TSX symbol "+symbol;
 					continue;
 				}
 				stockQuote.setSymbol(googleStockJson.getSymbol() + ":"
@@ -130,8 +142,7 @@ public class FormBean {
 				List<OptionQuote> optionQuotes = tsxOptionsReader
 						.readOptionQuote(symbol.replace(".TO", ""));
 				if (optionQuotes == null) {
-					System.out.println("No option defined for TSX symbol "
-							+ symbol);
+					msg=msg+"No option defined for TSX symbol "+symbol;
 					continue;
 				} else {
 					nbLine += addOptionQuote(optionQuotes, stockQuote,
@@ -141,7 +152,7 @@ public class FormBean {
 				// process symbols for US exchanges
 				googleStockJson = googleStockReader.readStockQuote(symbol);
 				if (googleStockJson == null) {
-					System.out.println("Skipping unknown US symbol " + symbol);
+					msg=msg+"Skipping unknown US symbol "+symbol;
 					continue;
 				}
 				stockQuote = googleConverter.convertStock(googleStockJson);
@@ -149,8 +160,7 @@ public class FormBean {
 				List<Expiration> expirations = googleStockReader
 						.readOptionExpiration(symbol);
 				if (expirations == null) {
-					System.out.println("No option defined for US symbol "
-							+ symbol);
+					msg=msg+"No options defined for US symbol "+symbol;
 					continue;
 				}
 				for (Expiration expiration : expirations) {
@@ -169,8 +179,7 @@ public class FormBean {
 
 		CsvWriter csvWriter = new CsvWriter();
 		out = csvWriter.write(stockQuotes, unique.equalsIgnoreCase("Y"));
-		// System.out.println(nbLine + " option quotes written to file " +
-		// file.getName());
+
 	}
 
 	private  int addOptionQuote(List<OptionQuote> optionQuotes,

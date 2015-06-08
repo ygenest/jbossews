@@ -34,7 +34,7 @@ public class TsxOptionsReader {
 
     public List<OptionQuote> readOptionQuote(String symbol) {
         String surl = MessageFormat.format(URLTSX, symbol);
-        LOGGER.log(Level.INFO, "URLTSX=" + surl);
+        LOGGER.log(Level.FINE, "URLTSX=" + surl);
         List<OptionQuote> optionQuotes = new ArrayList<OptionQuote>();
         org.jsoup.nodes.Document doc;
         try {
@@ -50,7 +50,7 @@ public class TsxOptionsReader {
         }
         Elements tds = doc.getElementsByTag("TD");
         if (tds.size() == 0) {
-            LOGGER.log(Level.INFO, "No TD tag on this page. returning...");
+            LOGGER.log(Level.FINE, "No TD tag on this page. returning...");
             return optionQuotes;
         }
         int count = 0;
@@ -62,7 +62,7 @@ public class TsxOptionsReader {
                 op = null;
                 Element a = td.child(0).child(0);
                 li = a.attr("title");
-                LOGGER.log(Level.INFO, "title attr=" + li);
+                LOGGER.log(Level.FINE, "title attr=" + li);
                 String optype = (li.substring(12, 13));
                 if (optype.equals("C") && put) {
                     continue;

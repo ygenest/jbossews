@@ -10,9 +10,7 @@
 <body>
 <jsp:useBean id="frm" class="jbossews.FormBean" scope="session"></jsp:useBean>
 <jsp:setProperty property="*" name="frm"/>
-<c:if test="${frm.ready}">
-	<jsp:forward page="/result.jsp"></jsp:forward>
-</c:if>
+
 
 <form action="frm.jsp" method="post">
 <table>
@@ -31,6 +29,10 @@ Expary month (YYYYMM)<input type="text" name="expMonth">
 </td></tr>
 </table>
 </form>
-${frm.symbLst }
+<c:if test="${frm.ready}">
+	<a href="result.jsp">Download Worksheet</a>
+</c:if>
+<p/>
+${frm.msg }
 </body>
 </html>

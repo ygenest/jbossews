@@ -53,8 +53,8 @@ public class Main {
             if (args[i].startsWith("-")) {
                 switch (args[i].charAt(1)) {
                     case 'd':
-                        LOGGER.setLevel(Level.INFO);
-                        LOGGER.log(Level.INFO, "In debugging mode");
+                        LOGGER.setLevel(Level.FINE);
+                        LOGGER.log(Level.FINE, "In debugging mode");
                         break;
                     case 'e':
                         callOptionsFilter.setExpMonth(args[i].toString().substring(2));
