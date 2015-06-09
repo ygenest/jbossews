@@ -29,10 +29,34 @@ public class FormBean {
 	private String unique = "N";
 	private String expMonth="";
 	private ByteArrayOutputStream out;
-	CallOptionsFilter callOptionsFilter=new CallOptionsFilter();
+	private String btn1;
+	private String zeroint="N";
+	CallOptionsFilter callOptionsFilter=new CallOptionsFilter();	
 	
-	FormBean() {
-		LOGGER.setLevel(Level.INFO);
+	public String getZeroint() {
+		return zeroint;
+	}
+
+	public void setZeroint(String zeroint) {
+		this.zeroint = zeroint;
+	}
+
+	public String getBtn1() {
+		LOGGER.log(Level.INFO, "getBtn1");
+		return btn1;
+	}
+
+	public void setBtn1(String btn1) {
+		LOGGER.log(Level.INFO, "setBtn1");
+		this.btn1 = btn1;
+		if (!this.symbLst.isEmpty()) {
+			processData();
+		}
+	}
+	
+	public FormBean() {
+		LOGGER.log(Level.INFO,"In FormBean constructor");
+		LOGGER.log(Level.FINE, "Level fine activated");
 	}
 	
 	public String getMsg() {
@@ -103,14 +127,12 @@ public class FormBean {
 	public void setSymbLst(String symbLst) {
 		LOGGER.log(Level.FINE, "setSymbLst");
 		this.symbLst = symbLst;
-		if (!this.symbLst.isEmpty()) {
-			processData();
-		}
 	}
 
 	private void processData() {
 		symArray = symbLst.split("\n");
 		callOptionsFilter.setNoStrikeBelowCurrent(noStrikeBelowCurrent.equalsIgnoreCase("Y"));
+		callOptionsFilter.setNoZeroInterest(zeroint.equalsIgnoreCase("Y"));
 		if (!expMonth.isEmpty()) {
 			LOGGER.log(Level.FINE, "Setting expMonth of filter at "+expMonth);
 			callOptionsFilter.setExpMonth(expMonth);
@@ -137,7 +159,7 @@ public class FormBean {
 				stockQuote = googleConverter.convertStock(googleStockJson);
 
 				if (stockQuote == null) {
-					msg=msg+"Skipping unknown TSX symbol "+symbol;
+					msg=msg+"Skipping unknown TSX symbol \n"+symbol;
 					continue;
 				}
 				stockQuote.setSymbol(googleStockJson.getSymbol() + ":"
@@ -145,7 +167,7 @@ public class FormBean {
 				List<OptionQuote> optionQuotes = tsxOptionsReader
 						.readOptionQuote(symbol.replace(".TO", ""));
 				if (optionQuotes == null) {
-					msg=msg+"No option defined for TSX symbol "+symbol;
+					msg=msg+"No option defined for TSX symbol \n"+symbol;
 					continue;
 				} else {
 					nbLine += addOptionQuote(optionQuotes, stockQuote,
@@ -155,7 +177,7 @@ public class FormBean {
 				// process symbols for US exchanges
 				googleStockJson = googleStockReader.readStockQuote(symbol);
 				if (googleStockJson == null) {
-					msg=msg+"Skipping unknown US symbol "+symbol;
+					msg=msg+"Skipping unknown US symbol \n"+symbol;
 					continue;
 				}
 				stockQuote = googleConverter.convertStock(googleStockJson);
@@ -163,7 +185,7 @@ public class FormBean {
 				List<Expiration> expirations = googleStockReader
 						.readOptionExpiration(symbol);
 				if (expirations == null) {
-					msg=msg+"No options defined for US symbol "+symbol;
+					msg=msg+"No options defined for US symbol \n"+symbol;
 					continue;
 				}
 				for (Expiration expiration : expirations) {

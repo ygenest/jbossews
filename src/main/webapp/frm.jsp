@@ -18,6 +18,7 @@
 <tr><td>
 Hide strike price below current:<input type="checkbox" name="noStrikeBelowCurrent" value="Y">
 Show only the first quote:<input type="checkbox" name="unique" value="Y">
+Hide zero interest quotes quote:<input type="checkbox" name="zeroint" value="Y">
 </td></tr>
 <tr><td>
 Expary month (YYYYMM)<input type="text" name="expMonth">
@@ -26,7 +27,7 @@ Expary month (YYYYMM)<input type="text" name="expMonth">
 <textarea rows="3" cols="30" name="symbLst"></textarea>
 </td></tr>
 <tr><td>
-<input type="submit"/>
+<input type="submit" name="btn1" />
 </td></tr>
 </table>
 </form>
