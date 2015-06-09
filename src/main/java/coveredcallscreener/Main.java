@@ -53,8 +53,8 @@ public class Main {
             if (args[i].startsWith("-")) {
                 switch (args[i].charAt(1)) {
                     case 'd':
-                        LOGGER.setLevel(Level.FINE);
-                        LOGGER.log(Level.FINE, "In debugging mode");
+                        LOGGER.setLevel(Level.INFO);
+                        LOGGER.log(Level.INFO, "In debugging mode");
                         break;
                     case 'e':
                         callOptionsFilter.setExpMonth(args[i].toString().substring(2));
@@ -113,11 +113,12 @@ public class Main {
                 // process symbols for TSX exchange
                 googleStockJson = googleStockReader.readStockQuote("TSE:" + symbol.replace(".TO", ""));
                 stockQuote = googleConverter.convertStock(googleStockJson);
-                stockQuote.setSymbol(googleStockJson.getSymbol() + ":" + googleStockJson.getExchange());
                 if (stockQuote == null) {
                     System.out.println("Skipping unknown TSX symbol " + symbol);
                     continue;
                 }
+                stockQuote.setSymbol(googleStockJson.getSymbol() + ":" + googleStockJson.getExchange());
+
                 List<OptionQuote> optionQuotes = tsxOptionsReader.readOptionQuote(symbol.replace(".TO", ""));
                 if (optionQuotes == null) {
                     System.out.println("No option defined for TSX symbol " + symbol);
@@ -152,7 +153,7 @@ public class Main {
         CsvWriter csvWriter = new CsvWriter();
         ByteArrayOutputStream out=csvWriter.write(stockQuotes,unique);
         try {
-			OutputStream outputStream = new FileOutputStream ("testf.csv");
+			OutputStream outputStream = new FileOutputStream ("test.csv");
 			try {
 				out.writeTo(outputStream);
 			} catch (IOException e) {
