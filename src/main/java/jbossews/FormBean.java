@@ -139,6 +139,9 @@ public class FormBean {
 
 	private void processData() {
 		symArray = symbLst.split("\n");
+		if (!expMonthFrom.isEmpty() && expMonthTo.isEmpty()) {
+			expMonthTo=expMonthFrom;
+		}
 		callOptionsFilter.setNoStrikeBelowCurrent(noStrikeBelowCurrent.equalsIgnoreCase("Y"));
 		callOptionsFilter.setNoZeroInterest(zeroint.equalsIgnoreCase("Y"));
 		if (!expMonthFrom.isEmpty()) {
