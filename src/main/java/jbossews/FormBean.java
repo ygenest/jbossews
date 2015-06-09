@@ -27,12 +27,14 @@ public class FormBean {
 	private String[] symArray;
 	private boolean putOption = false;
 	private String unique = "N";
-	private String expMonth="";
+	private String expMonthFrom="";
+	private String expMonthTo="";
 	private ByteArrayOutputStream out;
 	private String btn1;
 	private String zeroint="N";
-	CallOptionsFilter callOptionsFilter=new CallOptionsFilter();	
 	
+	CallOptionsFilter callOptionsFilter=new CallOptionsFilter();	
+
 	public String getZeroint() {
 		return zeroint;
 	}
@@ -88,15 +90,21 @@ public class FormBean {
 		LOGGER.log(Level.FINE, "setNoStrikeBelowCurrent");
 		this.noStrikeBelowCurrent = noStrikeBelowCurrent;
 	}
-	
-	public String getExpMonth() {
-		LOGGER.log(Level.FINE, "getExpMonth");
-		return expMonth;
+
+	public String getExpMonthFrom() {
+		return expMonthFrom;
 	}
 
-	public void setExpMonth(String expMonth) {
-		LOGGER.log(Level.FINE, "setExpMonth "+expMonth);
-		this.expMonth = expMonth;
+	public void setExpMonthFrom(String expMonthFrom) {
+		this.expMonthFrom = expMonthFrom;
+	}
+
+	public String getExpMonthTo() {
+		return expMonthTo;
+	}
+
+	public void setExpMonthTo(String expMonthTo) {
+		this.expMonthTo = expMonthTo;
 	}
 
 	public ByteArrayOutputStream getOut() {
@@ -133,9 +141,10 @@ public class FormBean {
 		symArray = symbLst.split("\n");
 		callOptionsFilter.setNoStrikeBelowCurrent(noStrikeBelowCurrent.equalsIgnoreCase("Y"));
 		callOptionsFilter.setNoZeroInterest(zeroint.equalsIgnoreCase("Y"));
-		if (!expMonth.isEmpty()) {
-			LOGGER.log(Level.FINE, "Setting expMonth of filter at "+expMonth);
-			callOptionsFilter.setExpMonth(expMonth);
+		if (!expMonthFrom.isEmpty()) {
+			LOGGER.log(Level.FINE, "Setting expMonth of filter at "+expMonthFrom);
+			callOptionsFilter.setExpMonthFrom(expMonthFrom);
+			callOptionsFilter.setExpMonthTo(expMonthTo);
 		}
 		readQuotes();
 		setReady(true);

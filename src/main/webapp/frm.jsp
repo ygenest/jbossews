@@ -21,7 +21,9 @@ Show only the first quote:<input type="checkbox" name="unique" value="Y">
 Hide zero interest quotes quote:<input type="checkbox" name="zeroint" value="Y">
 </td></tr>
 <tr><td>
-Expary month (YYYYMM)<input type="text" name="expMonth">
+Expary month from (YYYYMM)<input type="text" name="expMonthFrom">
+</td><td>
+Expary month to (YYYYMM)<input type="text" name="expMonthTo">
 </td></tr>
 <tr><td>
 <textarea rows="3" cols="30" name="symbLst"></textarea>

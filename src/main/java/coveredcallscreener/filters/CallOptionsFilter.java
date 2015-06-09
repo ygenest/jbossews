@@ -22,15 +22,18 @@ public class CallOptionsFilter {
     private  boolean noZeroInterest = false;
     private  int percentageAboveStrike = 0;
     private   boolean noStrikeBelowCurrent = false;
-    private  Calendar expDate=null;
+    private  Calendar expDateFrom=null;
+    private  Calendar expDateTo=null;
 
     public  boolean filter(OptionQuote optionQuote, boolean put) {
     	LOGGER.log(Level.FINE, "Filter in effect: NoStrikeBelowCurrent="+noStrikeBelowCurrent);
-         if (expDate != null) {
-        	 LOGGER.log(Level.FINE, "Filtering by expDate "+expDate);
-             Date d1 = expDate.getTime();
+         if (expDateFrom != null && expDateTo != null) {
+        	 
+             Date d1 = expDateFrom.getTime();
+             Date d3 = expDateTo.getTime();
              Date d2 = optionQuote.getExparyDate();
-             if (!d1.equals(d2)) {
+             LOGGER.log(Level.FINE, "Filtering by expDate d1="+d1+" d2="+d2+" d3="+d3);
+             if (!((d2.after(d1)|| (d2.equals(d1))) && (d2.before(d3))|| d2.equals(d3))) {          	 
                  return false;
              }
          }
@@ -99,7 +102,15 @@ public class CallOptionsFilter {
         
     }
     
-     public  void setExpMonth(String sdate) {
+    public void setExpMonthFrom(String sdate) {
+    	expDateFrom = convMonth(sdate);
+    }
+    
+    public void setExpMonthTo(String sdate) {
+    	expDateTo = convMonth(sdate);
+    }
+    
+     public Calendar  convMonth(String sdate) {
          int year = Integer.parseInt(sdate.substring(0, 4));
          int month = Integer.parseInt(sdate.substring(4, 6)) - 1;
          Calendar c = new GregorianCalendar(year, month, 1);
@@ -111,7 +122,7 @@ public class CallOptionsFilter {
              c.add(Calendar.DATE, 1);
          }
          c.add(Calendar.DATE, -1);
-         expDate = c;
+         return c;
 
      }
 

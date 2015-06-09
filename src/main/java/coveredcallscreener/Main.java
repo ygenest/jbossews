@@ -57,7 +57,7 @@ public class Main {
                         LOGGER.log(Level.FINE, "In debugging mode");
                         break;
                     case 'e':
-                        callOptionsFilter.setExpMonth(args[i].toString().substring(2));
+                        callOptionsFilter.setExpMonthFrom(args[i].toString().substring(2));
                         break;
 
                     case 'z':
