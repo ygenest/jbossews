@@ -29,7 +29,7 @@ public class CsvWriter {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
     public ByteArrayOutputStream write(List<StockQuote> stockQuotes,  boolean unique) {
-        LOGGER.log(Level.INFO, "Entering CsvWriter file:");
+        LOGGER.log(Level.FINE, "Entering CsvWriter file:");
         ByteArrayOutputStream out=null;
         try {
         	out =new ByteArrayOutputStream();
@@ -38,16 +38,16 @@ public class CsvWriter {
             
             pw.println("Symbol;Name;Expiry Date;Stock Price;Strike;Bid;Ask;Last;Volume;Open Int; Yield Opt;Yield Cap Gain;Div Yield;Put Val;Rate");
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            LOGGER.log(Level.INFO, "Stock quotes to write: {0}", stockQuotes.size());
+            LOGGER.log(Level.FINE, "Stock quotes to write: {0}", stockQuotes.size());
             for (StockQuote stockQuote : stockQuotes) {
                 if (stockQuote.getOptionQuotes() != null) {
-                    LOGGER.log(Level.INFO, "Option quotes to write: {0} for {1}", new Object[]{stockQuote.getOptionQuotes().size(), stockQuote.getSymbol()});
+                    LOGGER.log(Level.FINE, "Option quotes to write: {0} for {1}", new Object[]{stockQuote.getOptionQuotes().size(), stockQuote.getSymbol()});
                     for (OptionQuote optionQuote : stockQuote.getOptionQuotes()) {
                         String expDate;
                         if (optionQuote.getExparyDate() != null) {
                             expDate = sdf.format(optionQuote.getExparyDate());
                         } else {
-                            LOGGER.log(Level.INFO, "Null expiry date for option {0}", stockQuote.getSymbol());
+                            LOGGER.log(Level.FINE, "Null expiry date for option {0}", stockQuote.getSymbol());
                             expDate = "??";
                         }
 
@@ -73,7 +73,7 @@ public class CsvWriter {
                         if (unique) break;
                     }
                 } else {
-                    LOGGER.log(Level.INFO, "No option quote for ", stockQuote.getSymbol());
+                    LOGGER.log(Level.FINE, "No option quote for ", stockQuote.getSymbol());
                 }
             }
             pw.close();

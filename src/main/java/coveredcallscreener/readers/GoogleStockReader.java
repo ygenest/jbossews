@@ -34,18 +34,18 @@ public class GoogleStockReader {
     private final static byte SECOND= 2;
 
     public GoogleStockJson readStockQuote(String symbol) {
-        LOGGER.log(Level.INFO, "Entering readStockQuote with {0}",symbol);
+        LOGGER.log(Level.FINE, "Entering readStockQuote with {0}",symbol);
         GoogleStockJson googleStockJson = null;
         String surl = MessageFormat.format(URLSTOCK, symbol);
         try {
             URL url = new URL(surl);
-            LOGGER.log(Level.INFO, "URL:{0}",surl);
+            LOGGER.log(Level.FINE, "URL:{0}",surl);
             InputStream is = url.openStream();
             // a valid response from google start with "//"
             byte[] b = new byte[BYTESTOSKIP];
             is.read(b, 0, 5);
             if (b[FIRST] == SLASH && b[SECOND] == SLASH) {
-                LOGGER.log(Level.INFO, "Google response starts with expected // characters for {0}",symbol);
+                LOGGER.log(Level.FINE, "Google response starts with expected // characters for {0}",symbol);
                 ObjectMapper mapper = new ObjectMapper();
                 mapper.configure(JsonParser.Feature.ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER, true);
                 googleStockJson = mapper.readValue(is, GoogleStockJson.class);
@@ -62,7 +62,7 @@ public class GoogleStockReader {
 
     // TODO: ajouter NYSE devant symbole (voir BAC)
     public List<Expiration> readOptionExpiration(String symbol) {
-        LOGGER.log(Level.INFO, "Entering readOptionExpiration with {0}",symbol);
+        LOGGER.log(Level.FINE, "Entering readOptionExpiration with {0}",symbol);
         GoogleOptionsJson googleOptionsJson = null;
         String surl = MessageFormat.format(URLOPTIONEXP, symbol);
         URL url = null;
@@ -73,16 +73,16 @@ public class GoogleStockReader {
         }
         googleOptionsJson=accessGoogle(url);
         if (googleOptionsJson != null) {
-            LOGGER.log(Level.INFO, "Symbol {0} has {1} expiration dates",new Object[]{symbol,googleOptionsJson.getExpirations().size()});
+            LOGGER.log(Level.FINE, "Symbol {0} has {1} expiration dates",new Object[]{symbol,googleOptionsJson.getExpirations().size()});
             return googleOptionsJson.getExpirations();
         } else {
-            LOGGER.log(Level.INFO,"There is no expiration date for symbol {0},symbol");
+            LOGGER.log(Level.FINE,"There is no expiration date for symbol {0},symbol");
             return null;
         }
     }
 
     public GoogleOptionsJson readOptionQuote(String symbol,Expiration exp) {
-        LOGGER.log(Level.INFO, "Entering readOptionQuote with symbol {0} et expiration date {1}", new Object[]{symbol, exp});
+        LOGGER.log(Level.FINE, "Entering readOptionQuote with symbol {0} et expiration date {1}", new Object[]{symbol, exp});
         String surl = MessageFormat.format(URLOPTION, symbol,exp.getY(),exp.getM(),exp.getD());
         URL url = null;
         try {
@@ -94,13 +94,13 @@ public class GoogleStockReader {
     }
 
     private GoogleOptionsJson accessGoogle(URL url) {
-        LOGGER.log(Level.INFO, "Entering accessGoogle with URL {0}",url);
+        LOGGER.log(Level.FINE, "Entering accessGoogle with URL {0}",url);
         GoogleOptionsJson googleOptionsJson = null;
          InputStream is = null;
         try {
             is = url.openStream();
         } catch (IOException ex) {
-            LOGGER.log(Level.INFO, "Error accessing google with URL {0} ",url);
+            LOGGER.log(Level.FINE, "Error accessing google with URL {0} ",url);
             return null;
         }
         ObjectMapper mapper = new ObjectMapper();
