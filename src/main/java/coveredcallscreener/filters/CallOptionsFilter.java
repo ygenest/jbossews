@@ -5,9 +5,11 @@
 package coveredcallscreener.filters;
 
 import coveredcallscreener.domain.OptionQuote;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -19,11 +21,13 @@ public class CallOptionsFilter {
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
     private  boolean noZeroInterest = false;
     private  int percentageAboveStrike = 0;
-    private  boolean noStrikeBelowCurrent = false;
-    private  Calendar expDate;
+    private   boolean noStrikeBelowCurrent = false;
+    private  Calendar expDate=null;
 
     public  boolean filter(OptionQuote optionQuote, boolean put) {
+    	LOGGER.log(Level.FINE, "Filter in effect: NoStrikeBelowCurrent="+noStrikeBelowCurrent);
          if (expDate != null) {
+        	 LOGGER.log(Level.FINE, "Filtering by expDate "+expDate);
              Date d1 = expDate.getTime();
              Date d2 = optionQuote.getExparyDate();
              if (!d1.equals(d2)) {
@@ -39,9 +43,11 @@ public class CallOptionsFilter {
 
         }
         if (put && noStrikeBelowCurrent && optionQuote.getStrike() >= optionQuote.getStockPrice()) {
+        	LOGGER.log(Level.FINE, "Filtering strike price below current price on put options");
             return false;
         }
         if (!put && noStrikeBelowCurrent && optionQuote.getStrike() <= optionQuote.getStockPrice()) {
+        	LOGGER.log(Level.FINE, "Filtering strike price below current price");
             return false;
         }
         return true;
@@ -50,42 +56,43 @@ public class CallOptionsFilter {
     /**
      * @return the noZeroInterest
      */
-    public  boolean isNoZeroInterest() {
-        return noZeroInterest;
+    public   boolean isNoZeroInterest() {
+        return this.noZeroInterest;
     }
 
     /**
      * @param aNoZeroInterest the noZeroInterest to set
      */
     public  void setNoZeroInterest(boolean aNoZeroInterest) {
-        noZeroInterest = aNoZeroInterest;
+    	LOGGER.log(Level.FINE, "Filtering zero interest options");
+        this.noZeroInterest = aNoZeroInterest;
     }
 
     /**
      * @return the noStrikeBelowCurrent
      */
-    public  boolean isNoStrikeBelowCurrent() {
-        return noStrikeBelowCurrent;
+    public   boolean isNoStrikeBelowCurrent() {
+        return this.noStrikeBelowCurrent;
     }
 
     /**
      * @param aNoStrikeBelowCurrent the noStrikeBelowCurrent to set
      */
     public  void setNoStrikeBelowCurrent(boolean aNoStrikeBelowCurrent) {
-        noStrikeBelowCurrent = aNoStrikeBelowCurrent;
+        this.noStrikeBelowCurrent = aNoStrikeBelowCurrent;
     }
 
     /**
      * @return the percentageAboveStrike
      */
-    public int getPercentageAboveStrike() {
-        return percentageAboveStrike;
+    public  int getPercentageAboveStrike() {
+        return this.percentageAboveStrike;
     }
 
     /**
      * @param percentageAboveStrike the percentageAboveStrike to set
      */
-    public void setPercentageAboveStrike(int percentageAboveStrike) {
+    public  void setPercentageAboveStrike(int percentageAboveStrike) {
         this.percentageAboveStrike = percentageAboveStrike;
     }
     public void setExparyMonth(String expMonth) {

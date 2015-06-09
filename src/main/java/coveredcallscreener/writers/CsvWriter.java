@@ -4,21 +4,17 @@
  */
 package coveredcallscreener.writers;
 
-import coveredcallscreener.domain.OptionQuote;
-import coveredcallscreener.domain.StockQuote;
-
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import coveredcallscreener.domain.OptionQuote;
+import coveredcallscreener.domain.StockQuote;
 
 /**
  *

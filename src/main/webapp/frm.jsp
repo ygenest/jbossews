@@ -14,15 +14,16 @@
 
 <form action="frm.jsp" method="post">
 <table>
+
 <tr><td>
-<textarea rows="3" cols="30" name="symbLst"></textarea>
-</td></tr>
-<tr><td>
-Hide strike price below current (Y/N):<input type="checkbox" name="noStrikeBelowCurrent" value="Y">
-Show only the first quote (Y/N):<input type="checkbox" name="unique" value="Y">
+Hide strike price below current:<input type="checkbox" name="noStrikeBelowCurrent" value="Y">
+Show only the first quote:<input type="checkbox" name="unique" value="Y">
 </td></tr>
 <tr><td>
 Expary month (YYYYMM)<input type="text" name="expMonth">
+</td></tr>
+<tr><td>
+<textarea rows="3" cols="30" name="symbLst"></textarea>
 </td></tr>
 <tr><td>
 <input type="submit"/>

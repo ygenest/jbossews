@@ -29,6 +29,5 @@ sos.flush();
 sos.close();
 outstream.flush();
 outstream.close();
-session.invalidate();
 
 %>

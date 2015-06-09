@@ -20,100 +20,103 @@ import coveredcallscreener.writers.CsvWriter;
 
 public class FormBean {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-	private String symbLst;
+	private String symbLst="";
 	private String msg="";
+	private boolean ready = false;
+	private String noStrikeBelowCurrent="N";
+	private String[] symArray;
+	private boolean putOption = false;
+	private String unique = "N";
+	private String expMonth="";
+	private ByteArrayOutputStream out;
+	CallOptionsFilter callOptionsFilter=new CallOptionsFilter();
+	
+	FormBean() {
+		LOGGER.setLevel(Level.INFO);
+	}
+	
 	public String getMsg() {
+		LOGGER.log(Level.FINE, "getMsg");
 		return msg;
 	}
 
 	public void setMsg(String msg) {
+		LOGGER.log(Level.FINE, "setMsg");
 		this.msg = msg;
 	}
 
-
-
-	private String[] symArray;
-	private boolean putOption = false;
-	private String unique = "N";
 	public String getUnique() {
+		LOGGER.log(Level.FINE, "getUnique");
 		return unique;
 	}
 
 	public void setUnique(String unique) {
+		LOGGER.log(Level.FINE, "setUnique");
 		this.unique = unique;
 	}
 
-
-
-	private boolean ready = false;
-	private String noStrikeBelowCurrent="N";
-	private CallOptionsFilter callOptionsFilter=new CallOptionsFilter();
-
-
-
 	public String getNoStrikeBelowCurrent() {
+		LOGGER.log(Level.FINE, "getNoStrikeBelowCurrent");
 		return noStrikeBelowCurrent;
 	}
 
 	public void setNoStrikeBelowCurrent(String noStrikeBelowCurrent) {
+		LOGGER.log(Level.FINE, "setNoStrikeBelowCurrent");
 		this.noStrikeBelowCurrent = noStrikeBelowCurrent;
 	}
-
-
-
-	private String expMonth="";
 	
 	public String getExpMonth() {
+		LOGGER.log(Level.FINE, "getExpMonth");
 		return expMonth;
 	}
 
 	public void setExpMonth(String expMonth) {
+		LOGGER.log(Level.FINE, "setExpMonth "+expMonth);
 		this.expMonth = expMonth;
 	}
 
-
-
-	private ByteArrayOutputStream out;
-
 	public ByteArrayOutputStream getOut() {
+		LOGGER.log(Level.FINE, "getOut");
 		return out;
 	}
 
 	public void setOut(ByteArrayOutputStream out) {
+		LOGGER.log(Level.FINE, "setOut");
 		this.out = out;
 	}
 
 	public boolean getReady() {
+		LOGGER.log(Level.FINE, "getReady "+symbLst);
 		return ready;
 	}
 
 	public void setReady(boolean ready) {
+		LOGGER.log(Level.FINE, "setReady");
 		this.ready = ready;
 	}
 
 	public String getSymbLst() {
+		LOGGER.log(Level.FINE, "getSymbLst");
 		return symbLst;
 	}
 
 	public void setSymbLst(String symbLst) {
+		LOGGER.log(Level.FINE, "setSymbLst");
 		this.symbLst = symbLst;
-		if (!symbLst.isEmpty()) {
+		if (!this.symbLst.isEmpty()) {
 			processData();
-
 		}
 	}
 
 	private void processData() {
 		symArray = symbLst.split("\n");
-
-		
 		callOptionsFilter.setNoStrikeBelowCurrent(noStrikeBelowCurrent.equalsIgnoreCase("Y"));
 		if (!expMonth.isEmpty()) {
+			LOGGER.log(Level.FINE, "Setting expMonth of filter at "+expMonth);
 			callOptionsFilter.setExpMonth(expMonth);
 		}
 		readQuotes();
 		setReady(true);
-
 	}
 
 	public void readQuotes() {
