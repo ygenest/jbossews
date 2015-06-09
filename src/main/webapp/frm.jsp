@@ -33,6 +33,7 @@ Expary month (YYYYMM)<input type="text" name="expMonth">
 	<a href="result.jsp">Download Worksheet</a>
 </c:if>
 <p/>
+<a href="logout.jsp">Logout</a>
 ${frm.msg }
 </body>
 </html>
