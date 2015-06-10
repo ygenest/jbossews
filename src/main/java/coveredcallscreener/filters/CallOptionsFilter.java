@@ -13,7 +13,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
+ * The filter class determine if a quote must be written to the outputstream
  * @author Yves
  */
 public class CallOptionsFilter {

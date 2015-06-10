@@ -20,8 +20,12 @@ import coveredcallscreener.writers.CsvWriter;
 
 public class FormBean {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	CallOptionsFilter callOptionsFilter=new CallOptionsFilter();
 	private String symbLst="";
-	private String msg="";
+	private String zeroint="N";
+	private String groupName="";
+	private String symbDb;
+	private List<String> msg=new ArrayList<String>();
 	private boolean ready = false;
 	private String noStrikeBelowCurrent="N";
 	private String[] symArray;
@@ -31,10 +35,38 @@ public class FormBean {
 	private String expMonthTo="";
 	private ByteArrayOutputStream out;
 	private String btn1;
-	private String zeroint="N";
+	private String btn2;
 	
-	CallOptionsFilter callOptionsFilter=new CallOptionsFilter();	
+	public String getBtn2() {
+		return btn2;
+	}
 
+	public void setBtn2(String btn2) {
+		LOGGER.log(Level.INFO, "setBtn2");
+		this.btn2 = btn2;
+		if (!this.symbDb.isEmpty() && !this.groupName.isEmpty()) {
+			loadData();
+		}
+		this.btn2 = btn2;
+	}
+
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	public String getSymbDb() {
+		return symbDb;
+	}
+
+	public void setSymbDb(String symbDb) {
+		this.symbDb = symbDb;
+	}
+	
 	public String getZeroint() {
 		return zeroint;
 	}
@@ -61,12 +93,12 @@ public class FormBean {
 		LOGGER.log(Level.FINE, "Level fine activated");
 	}
 	
-	public String getMsg() {
+	public List<String> getMsg() {
 		LOGGER.log(Level.FINE, "getMsg");
 		return msg;
 	}
 
-	public void setMsg(String msg) {
+	public void setMsg(List<String> msg) {
 		LOGGER.log(Level.FINE, "setMsg");
 		this.msg = msg;
 	}
@@ -136,6 +168,13 @@ public class FormBean {
 		LOGGER.log(Level.FINE, "setSymbLst");
 		this.symbLst = symbLst;
 	}
+	
+	private void loadData() {
+		symArray = symbDb.split("\n");
+		for( int i=0; i < symArray.length;i++) {
+			System.out.println("elem="+symArray[i]);
+		}
+	}
 
 	private void processData() {
 		symArray = symbLst.split("\n");
@@ -171,7 +210,7 @@ public class FormBean {
 				stockQuote = googleConverter.convertStock(googleStockJson);
 
 				if (stockQuote == null) {
-					msg=msg+"Skipping unknown TSX symbol \n"+symbol;
+					msg.add("Skipping unknown TSX symbol "+symbol);
 					continue;
 				}
 				stockQuote.setSymbol(googleStockJson.getSymbol() + ":"
@@ -179,7 +218,7 @@ public class FormBean {
 				List<OptionQuote> optionQuotes = tsxOptionsReader
 						.readOptionQuote(symbol.replace(".TO", ""));
 				if (optionQuotes == null) {
-					msg=msg+"No option defined for TSX symbol \n"+symbol;
+					msg.add("No option defined for TSX symbol "+symbol);
 					continue;
 				} else {
 					nbLine += addOptionQuote(optionQuotes, stockQuote,
@@ -189,7 +228,7 @@ public class FormBean {
 				// process symbols for US exchanges
 				googleStockJson = googleStockReader.readStockQuote(symbol);
 				if (googleStockJson == null) {
-					msg=msg+"Skipping unknown US symbol \n"+symbol;
+					msg.add("Skipping unknown US symbol "+symbol);
 					continue;
 				}
 				stockQuote = googleConverter.convertStock(googleStockJson);
@@ -197,7 +236,7 @@ public class FormBean {
 				List<Expiration> expirations = googleStockReader
 						.readOptionExpiration(symbol);
 				if (expirations == null) {
-					msg=msg+"No options defined for US symbol \n"+symbol;
+					msg.add("No options defined for US symbol "+symbol);
 					continue;
 				}
 				for (Expiration expiration : expirations) {
@@ -215,7 +254,7 @@ public class FormBean {
 		}
 
 		CsvWriter csvWriter = new CsvWriter();
-		out = csvWriter.write(stockQuotes, unique.equalsIgnoreCase("Y"));
+		out = csvWriter.write(stockQuotes);
 
 	}
 
@@ -228,6 +267,7 @@ public class FormBean {
 				stockQuote.getOptionQuotes().add(optionQuote);
 				count++;
 			}
+			if (unique.equalsIgnoreCase("Y") && count==1) return 1;
 		}
 		return count;
 	}
