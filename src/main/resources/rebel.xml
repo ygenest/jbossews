@@ -4,8 +4,6 @@
 	<classpath>
 		<dir name="D:/ws3/jbossews/target/classes">
 		</dir>
-		<dir name="D:/ws3/jbossews/target/test-classes">
-		</dir>
 	</classpath>
 
 	<web>

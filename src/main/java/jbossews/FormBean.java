@@ -20,100 +20,137 @@ import coveredcallscreener.writers.CsvWriter;
 
 public class FormBean {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-	private String symbLst;
+	private String symbLst="";
 	private String msg="";
+	private boolean ready = false;
+	private String noStrikeBelowCurrent="N";
+	private String[] symArray;
+	private boolean putOption = false;
+	private String unique = "N";
+	private String expMonthFrom="";
+	private String expMonthTo="";
+	private ByteArrayOutputStream out;
+	private String btn1;
+	private String zeroint="N";
+	
+	CallOptionsFilter callOptionsFilter=new CallOptionsFilter();	
+
+	public String getZeroint() {
+		return zeroint;
+	}
+
+	public void setZeroint(String zeroint) {
+		this.zeroint = zeroint;
+	}
+
+	public String getBtn1() {
+		LOGGER.log(Level.INFO, "getBtn1");
+		return btn1;
+	}
+
+	public void setBtn1(String btn1) {
+		LOGGER.log(Level.INFO, "setBtn1");
+		this.btn1 = btn1;
+		if (!this.symbLst.isEmpty()) {
+			processData();
+		}
+	}
+	
+	public FormBean() {
+		LOGGER.log(Level.INFO,"In FormBean constructor");
+		LOGGER.log(Level.FINE, "Level fine activated");
+	}
+	
 	public String getMsg() {
+		LOGGER.log(Level.FINE, "getMsg");
 		return msg;
 	}
 
 	public void setMsg(String msg) {
+		LOGGER.log(Level.FINE, "setMsg");
 		this.msg = msg;
 	}
 
-
-
-	private String[] symArray;
-	private boolean putOption = false;
-	private String unique = "N";
 	public String getUnique() {
+		LOGGER.log(Level.FINE, "getUnique");
 		return unique;
 	}
 
 	public void setUnique(String unique) {
+		LOGGER.log(Level.FINE, "setUnique");
 		this.unique = unique;
 	}
 
-
-
-	private boolean ready = false;
-	private String noStrikeBelowCurrent="N";
-	private CallOptionsFilter callOptionsFilter=new CallOptionsFilter();
-
-
-
 	public String getNoStrikeBelowCurrent() {
+		LOGGER.log(Level.FINE, "getNoStrikeBelowCurrent");
 		return noStrikeBelowCurrent;
 	}
 
 	public void setNoStrikeBelowCurrent(String noStrikeBelowCurrent) {
+		LOGGER.log(Level.FINE, "setNoStrikeBelowCurrent");
 		this.noStrikeBelowCurrent = noStrikeBelowCurrent;
 	}
 
-
-
-	private String expMonth="";
-	
-	public String getExpMonth() {
-		return expMonth;
+	public String getExpMonthFrom() {
+		return expMonthFrom;
 	}
 
-	public void setExpMonth(String expMonth) {
-		this.expMonth = expMonth;
+	public void setExpMonthFrom(String expMonthFrom) {
+		this.expMonthFrom = expMonthFrom;
 	}
 
+	public String getExpMonthTo() {
+		return expMonthTo;
+	}
 
-
-	private ByteArrayOutputStream out;
+	public void setExpMonthTo(String expMonthTo) {
+		this.expMonthTo = expMonthTo;
+	}
 
 	public ByteArrayOutputStream getOut() {
+		LOGGER.log(Level.FINE, "getOut");
 		return out;
 	}
 
 	public void setOut(ByteArrayOutputStream out) {
+		LOGGER.log(Level.FINE, "setOut");
 		this.out = out;
 	}
 
 	public boolean getReady() {
+		LOGGER.log(Level.FINE, "getReady "+symbLst);
 		return ready;
 	}
 
 	public void setReady(boolean ready) {
+		LOGGER.log(Level.FINE, "setReady");
 		this.ready = ready;
 	}
 
 	public String getSymbLst() {
+		LOGGER.log(Level.FINE, "getSymbLst");
 		return symbLst;
 	}
 
 	public void setSymbLst(String symbLst) {
+		LOGGER.log(Level.FINE, "setSymbLst");
 		this.symbLst = symbLst;
-		if (!symbLst.isEmpty()) {
-			processData();
-
-		}
 	}
 
 	private void processData() {
 		symArray = symbLst.split("\n");
-
-		
+		if (!expMonthFrom.isEmpty() && expMonthTo.isEmpty()) {
+			expMonthTo=expMonthFrom;
+		}
 		callOptionsFilter.setNoStrikeBelowCurrent(noStrikeBelowCurrent.equalsIgnoreCase("Y"));
-		if (!expMonth.isEmpty()) {
-			callOptionsFilter.setExpMonth(expMonth);
+		callOptionsFilter.setNoZeroInterest(zeroint.equalsIgnoreCase("Y"));
+		if (!expMonthFrom.isEmpty()) {
+			LOGGER.log(Level.FINE, "Setting expMonth of filter at "+expMonthFrom);
+			callOptionsFilter.setExpMonthFrom(expMonthFrom);
+			callOptionsFilter.setExpMonthTo(expMonthTo);
 		}
 		readQuotes();
 		setReady(true);
-
 	}
 
 	public void readQuotes() {
@@ -134,7 +171,7 @@ public class FormBean {
 				stockQuote = googleConverter.convertStock(googleStockJson);
 
 				if (stockQuote == null) {
-					msg=msg+"Skipping unknown TSX symbol "+symbol;
+					msg=msg+"Skipping unknown TSX symbol \n"+symbol;
 					continue;
 				}
 				stockQuote.setSymbol(googleStockJson.getSymbol() + ":"
@@ -142,7 +179,7 @@ public class FormBean {
 				List<OptionQuote> optionQuotes = tsxOptionsReader
 						.readOptionQuote(symbol.replace(".TO", ""));
 				if (optionQuotes == null) {
-					msg=msg+"No option defined for TSX symbol "+symbol;
+					msg=msg+"No option defined for TSX symbol \n"+symbol;
 					continue;
 				} else {
 					nbLine += addOptionQuote(optionQuotes, stockQuote,
@@ -152,7 +189,7 @@ public class FormBean {
 				// process symbols for US exchanges
 				googleStockJson = googleStockReader.readStockQuote(symbol);
 				if (googleStockJson == null) {
-					msg=msg+"Skipping unknown US symbol "+symbol;
+					msg=msg+"Skipping unknown US symbol \n"+symbol;
 					continue;
 				}
 				stockQuote = googleConverter.convertStock(googleStockJson);
@@ -160,7 +197,7 @@ public class FormBean {
 				List<Expiration> expirations = googleStockReader
 						.readOptionExpiration(symbol);
 				if (expirations == null) {
-					msg=msg+"No options defined for US symbol "+symbol;
+					msg=msg+"No options defined for US symbol \n"+symbol;
 					continue;
 				}
 				for (Expiration expiration : expirations) {

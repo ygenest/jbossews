@@ -35,6 +35,7 @@ import java.util.logging.Logger;
 public class Main {
 
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+    static CallOptionsFilter callOptionsFilter=new CallOptionsFilter();
     
 	
 
@@ -47,7 +48,6 @@ public class Main {
         boolean invalidArg = false;
         boolean putOption = false;
         boolean unique = false;
-        CallOptionsFilter callOptionsFilter=new CallOptionsFilter();
         String fname = null;
         for (int i = 0; i < args.length; i++) {
             if (args[i].startsWith("-")) {
@@ -57,7 +57,7 @@ public class Main {
                         LOGGER.log(Level.FINE, "In debugging mode");
                         break;
                     case 'e':
-                        callOptionsFilter.setExpMonth(args[i].toString().substring(2));
+                        callOptionsFilter.setExpMonthFrom(args[i].toString().substring(2));
                         break;
 
                     case 'z':
@@ -124,7 +124,7 @@ public class Main {
                     System.out.println("No option defined for TSX symbol " + symbol);
                     continue;
                 } else {
-                    nbLine += addOptionQuote(optionQuotes, stockQuote, putOption, callOptionsFilter);
+                    nbLine += addOptionQuote(optionQuotes, stockQuote, putOption);
                 }
             } else {
                 // process symbols for US exchanges
@@ -143,7 +143,7 @@ public class Main {
                 for (Expiration expiration : expirations) {
                     GoogleOptionsJson googleOptionsJson = googleStockReader.readOptionQuote(symbol, expiration);
                     List<OptionQuote> optionQuotes = googleConverter.convertOption(googleOptionsJson, expiration);
-                    nbLine += addOptionQuote(optionQuotes, stockQuote, putOption, callOptionsFilter);
+                    nbLine += addOptionQuote(optionQuotes, stockQuote, putOption);
 
                 }
 
@@ -167,7 +167,7 @@ public class Main {
         System.out.println(nbLine + " option quotes written to file " + file.getName());
     }
 
-    private static int addOptionQuote(List<OptionQuote> optionQuotes, StockQuote stockQuote, boolean putOption, CallOptionsFilter callOptionsFilter) {
+    private static int addOptionQuote(List<OptionQuote> optionQuotes, StockQuote stockQuote, boolean putOption) {
         int count = 0;
         for (OptionQuote optionQuote : optionQuotes) {
             optionQuote.setStockPrice(stockQuote.getLast());
