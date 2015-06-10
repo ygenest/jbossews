@@ -24,7 +24,7 @@ public class CsvWriter {
 
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 
-    public ByteArrayOutputStream write(List<StockQuote> stockQuotes,  boolean unique) {
+    public ByteArrayOutputStream write(List<StockQuote> stockQuotes) {
         LOGGER.log(Level.FINE, "Entering CsvWriter file:");
         ByteArrayOutputStream out=null;
         try {
@@ -66,7 +66,6 @@ public class CsvWriter {
                                 (optionQuote.getLast() / optionQuote.getStrike()) * 100
                         );
                         pw.println();
-                        if (unique) break;
                     }
                 } else {
                     LOGGER.log(Level.FINE, "No option quote for ", stockQuote.getSymbol());

@@ -151,7 +151,7 @@ public class Main {
             stockQuotes.add(stockQuote);
         }
         CsvWriter csvWriter = new CsvWriter();
-        ByteArrayOutputStream out=csvWriter.write(stockQuotes,unique);
+        ByteArrayOutputStream out=csvWriter.write(stockQuotes);
         try {
 			OutputStream outputStream = new FileOutputStream ("testf.csv");
 			try {

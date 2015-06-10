@@ -254,7 +254,7 @@ public class FormBean {
 		}
 
 		CsvWriter csvWriter = new CsvWriter();
-		out = csvWriter.write(stockQuotes, unique.equalsIgnoreCase("Y"));
+		out = csvWriter.write(stockQuotes);
 
 	}
 
@@ -267,6 +267,7 @@ public class FormBean {
 				stockQuote.getOptionQuotes().add(optionQuote);
 				count++;
 			}
+			if (unique.equalsIgnoreCase("Y") && count==1) return 1;
 		}
 		return count;
 	}
