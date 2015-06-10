@@ -20,7 +20,11 @@ import coveredcallscreener.writers.CsvWriter;
 
 public class FormBean {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	CallOptionsFilter callOptionsFilter=new CallOptionsFilter();
 	private String symbLst="";
+	private String zeroint="N";
+	private String groupName="";
+	private String symbDb;
 	private String msg="";
 	private boolean ready = false;
 	private String noStrikeBelowCurrent="N";
@@ -31,10 +35,38 @@ public class FormBean {
 	private String expMonthTo="";
 	private ByteArrayOutputStream out;
 	private String btn1;
-	private String zeroint="N";
+	private String btn2;
 	
-	CallOptionsFilter callOptionsFilter=new CallOptionsFilter();	
+	public String getBtn2() {
+		return btn2;
+	}
 
+	public void setBtn2(String btn2) {
+		LOGGER.log(Level.INFO, "setBtn2");
+		this.btn2 = btn2;
+		if (!this.symbDb.isEmpty() && !this.groupName.isEmpty()) {
+			loadData();
+		}
+		this.btn2 = btn2;
+	}
+
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	public String getSymbDb() {
+		return symbDb;
+	}
+
+	public void setSymbDb(String symbDb) {
+		this.symbDb = symbDb;
+	}
+	
 	public String getZeroint() {
 		return zeroint;
 	}
@@ -135,6 +167,13 @@ public class FormBean {
 	public void setSymbLst(String symbLst) {
 		LOGGER.log(Level.FINE, "setSymbLst");
 		this.symbLst = symbLst;
+	}
+	
+	private void loadData() {
+		symArray = symbDb.split("\n");
+		for( int i=0; i < symArray.length;i++) {
+			System.out.println("elem="+symArray[i]);
+		}
 	}
 
 	private void processData() {
