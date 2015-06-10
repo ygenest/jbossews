@@ -237,18 +237,18 @@ pre {
 				<section class='col-xs-12 col-sm-6 col-md-6'>
 					<table>
 						<tr>
-							<td>Hide strike price below current:<input type="checkbox"
-								name="noStrikeBelowCurrent" value="Y">
+							<td><input type="checkbox"
+								name="noStrikeBelowCurrent" value="Y">Hide strike price below current
 							</td>
 						</tr>
 						<tr>
-							<td>Show only the first quote:<input type="checkbox"
-								name="unique" value="Y">
+							<td><input type="checkbox"
+								name="unique" value="Y">Show only the first quote
 							</td>
 						</tr>
 						<tr>
-							<td>Hide zero interest quotes quote:<input type="checkbox"
-								name="zeroint" value="Y">
+							<td><input type="checkbox"
+								name="zeroint" value="Y">Hide zero interest quotes quote
 							</td>
 						</tr>
 						<tr>
@@ -270,8 +270,16 @@ pre {
 					<c:if test="${frm.ready}">
 						<a href="result.jsp">Download Worksheet</a>
 					</c:if>
-					<p />
-					<a href="logout.jsp">Logout</a> ${frm.msg }
+					<br />
+					<a href="logout.jsp">Logout</a>
+					<br/>
+					<table>
+					<c:forEach items="${frm.msg }" var="msg">
+					<tr><td>
+						<c:out value="${msg}"/>
+						</td></tr>
+					</c:forEach>
+					</table>
 				</section>
 				<section class="col-xs-12 col-sm-6 col-md-6">
 					Group name: <input type="text" name="groupName" /><br />
