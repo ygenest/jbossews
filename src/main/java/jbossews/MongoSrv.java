@@ -23,7 +23,7 @@ public class MongoSrv {
 		MongoSrv srv = new MongoSrv();
 		//String[] strings = { "a", "b", "c" };
 		//srv.addData("canOpt2", strings);
-		List<String> res = srv.readData("canOpt");
+		List<String> res = srv.readGroup();
 		for (String r:res) System.out.println("elelm="+r);
 		//srv.readData("canOpt");
 
@@ -47,6 +47,7 @@ public class MongoSrv {
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return "Error accessing database (addData)";
 		}
 		DB db = mongoClient.getDB(database);
 		DBCollection coll = db.getCollection(collection);
@@ -67,6 +68,33 @@ public class MongoSrv {
 		}
 	}
 	
+	public String deleteGroup(String grName) {
+		DBObject res;
+		List<String> rs2=null;
+		MongoClient mongoClient = null;
+		try {
+			mongoClient = new MongoClient();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		DB db = mongoClient.getDB(database);	
+		DBCollection coll = db.getCollection(collection);
+		BasicDBObject whereQuery = new BasicDBObject();
+		whereQuery.put("name", grName);
+		DBCursor cursor = coll.find(whereQuery);
+		if (cursor.hasNext()) {
+			res=cursor.next();
+			coll.remove(res);
+			return null;
+		} else
+		{
+			return "This objectdoes not exists";
+		}
+
+	}
+	
 	public List<String> readGroup() {
 		List<String> res=new ArrayList<String>();
 		MongoClient mongoClient = null;
@@ -75,6 +103,7 @@ public class MongoSrv {
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 		DB db = mongoClient.getDB(database);
 		DBCollection coll = db.getCollection(collection);
@@ -94,6 +123,7 @@ public class MongoSrv {
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 		DB db = mongoClient.getDB(database);	
 		DBCollection coll = db.getCollection(collection);

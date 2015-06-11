@@ -6,6 +6,9 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
 <title>Welcome to OpenShift</title>
 
 <style>
@@ -283,13 +286,13 @@ pre {
 				</section>
 				<section class="col-xs-12 col-sm-6 col-md-6">
 				<table>
-				<tr><td>New Group name 1:</td>
+				<tr><td>New Group name:</td>
 					 <td><input type="text" name="groupName" value="${frm.groupName}"/></td>
 					 </tr>
-					 <tr><td>Group name:</td>
+					 <tr><td>or edit Group name:</td>
 					 <td><select name="selectedGroup">
-					 <c:forEach items="${frm.groupNameExist }" var="elem">
-						 <option value="">-- Select --</option>
+					 <option value="">-- Select --</option>
+					 <c:forEach items="${frm.groupNameExist }" var="elem">				 
 					 	<option value="${elem}">${elem}</option>					 	
 					 </c:forEach>
 					 </select>
@@ -298,6 +301,7 @@ pre {
 					 <tr><td>Symbols:</td>
 					<td><textarea rows="3" cols="30" name="symbDb" ><c:out value="${frm.symbDb}" /></textarea></td>
 					</tr>
+					<tr><td><input type="checkbox" name="delGroup" value="Y"/>Delete this group</td></tr>
 					<tr><td><input type="submit" name="btn2" /></td>
 					<p style="color:red"><c:out value="${frm.errMsg}" /></p>
 					</table>

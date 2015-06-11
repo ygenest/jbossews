@@ -22,6 +22,7 @@ public class FormBean {
 	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 	CallOptionsFilter callOptionsFilter=new CallOptionsFilter();
 	private String symbLst="";
+	private String delGroup="N";
 	private String zeroint="N";
 	private String groupName="";
 	private String selectedGroup;
@@ -29,7 +30,6 @@ public class FormBean {
 	private List<String> msg=new ArrayList<String>();
 	private boolean ready = false;
 	private String noStrikeBelowCurrent="N";
-	private String[] symArray;
 	private boolean putOption = false;
 	private String unique = "N";
 	private String expMonthFrom="";
@@ -40,6 +40,15 @@ public class FormBean {
 	private String errMsg;
 	
 
+	public String getDelGroup() {
+		return delGroup;
+	}
+
+	public void setDelGroup(String delGroup) {
+		this.delGroup = delGroup;
+	}
+
+	
 	public List<String> getGroupNameExist() {
 		MongoSrv mongoSrv=new MongoSrv();
 		return mongoSrv.readGroup();
@@ -66,25 +75,46 @@ public class FormBean {
 	}
 
 	public void setBtn2(String btn2) {
+		this.btn2 = btn2;
 		MongoSrv mongoSrv=new MongoSrv();
 		LOGGER.log(Level.INFO, "setBtn2");
 		this.btn2 = btn2;
 		if (!this.symbDb.isEmpty() && !this.groupName.isEmpty()) {
-			symArray = symbDb.split("\n");
-			errMsg=mongoSrv.addData(symbDb, symArray);
+			LOGGER.log(Level.INFO, "Adding data");
+			String [] symArray = symbDb.split("\n");
+			errMsg=mongoSrv.addData(groupName, symArray);
+			this.symbDb="";
+			this.groupName="";
+			return;
 		}
+		if (!this.selectedGroup.isEmpty() && this.delGroup.equalsIgnoreCase("Y")) {
+			LOGGER.log(Level.INFO, "Deleting data");
+			mongoSrv.deleteGroup(this.selectedGroup);
+			this.selectedGroup="";
+			this.delGroup="N";
+			return;
+		}
+		if (!this.selectedGroup.isEmpty() && !this.symbDb.isEmpty())  {
+			LOGGER.log(Level.INFO, "Updating data");
+			mongoSrv.deleteGroup(this.selectedGroup);
+			symbDb="";
+			String [] symArray = symbDb.split("\n");
+			errMsg=mongoSrv.addData(groupName, symArray);
+			this.symbDb="";
+			this.groupName="";
+			return;
+		}
+		
 		if (!this.selectedGroup.isEmpty()) {
-			LOGGER.log(Level.INFO, "selected group="+this.selectedGroup);
-			this.groupName=this.selectedGroup;
+			LOGGER.log(Level.INFO, "Reading data");
 			symbDb="";
 			List<String> symbLst = mongoSrv.readData(this.getSelectedGroup());
 			for (String s:symbLst) {
-				LOGGER.log(Level.INFO, "adding1 "+s);
 				symbDb=symbDb.concat(s+"\n");
-			}
-			
+			}	
 		}
-		this.btn2 = btn2;
+		
+		
 	}
 
 
@@ -213,7 +243,7 @@ public class FormBean {
 	}
 
 	private void processData() {
-		symArray = symbLst.split("\n");
+		String [] symArray = symbLst.split("\n");
 		if (!expMonthFrom.isEmpty() && expMonthTo.isEmpty()) {
 			expMonthTo=expMonthFrom;
 		}
@@ -224,11 +254,11 @@ public class FormBean {
 			callOptionsFilter.setExpMonthFrom(expMonthFrom);
 			callOptionsFilter.setExpMonthTo(expMonthTo);
 		}
-		readQuotes();
+		readQuotes(symArray);
 		setReady(true);
 	}
 
-	public void readQuotes() {
+	public void readQuotes(String... symArray) {
 		List<String> symbols = Arrays.asList(symArray);
 		GoogleStockReader googleStockReader = new GoogleStockReader();
 		TsxOptionsReader tsxOptionsReader = new TsxOptionsReader(putOption);
