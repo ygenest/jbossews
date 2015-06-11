@@ -171,6 +171,7 @@ public class FormBean {
 	
 	private void loadData() {
 		symArray = symbDb.split("\n");
+		MongoSrv mongoSrv=new MongoSrv();
 		for( int i=0; i < symArray.length;i++) {
 			System.out.println("elem="+symArray[i]);
 		}
