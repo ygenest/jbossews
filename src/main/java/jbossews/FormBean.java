@@ -24,7 +24,8 @@ public class FormBean {
 	private String symbLst="";
 	private String zeroint="N";
 	private String groupName="";
-	private String symbDb;
+	private String selectedGroup;
+	private String symbDb="";
 	private List<String> msg=new ArrayList<String>();
 	private boolean ready = false;
 	private String noStrikeBelowCurrent="N";
@@ -36,16 +37,52 @@ public class FormBean {
 	private ByteArrayOutputStream out;
 	private String btn1;
 	private String btn2;
+	private String errMsg;
 	
+
+	public List<String> getGroupNameExist() {
+		MongoSrv mongoSrv=new MongoSrv();
+		return mongoSrv.readGroup();
+	}
+	
+	public String getErrMsg() {
+		return errMsg;
+	}
+
+	public void setErrMsg(String errMsg) {
+		this.errMsg = errMsg;
+	}
+
 	public String getBtn2() {
 		return btn2;
 	}
+	
+	public String getSelectedGroup() {
+		return selectedGroup;
+	}
+
+	public void setSelectedGroup(String selectedGroup) {
+		this.selectedGroup = selectedGroup;
+	}
 
 	public void setBtn2(String btn2) {
+		MongoSrv mongoSrv=new MongoSrv();
 		LOGGER.log(Level.INFO, "setBtn2");
 		this.btn2 = btn2;
 		if (!this.symbDb.isEmpty() && !this.groupName.isEmpty()) {
-			loadData();
+			symArray = symbDb.split("\n");
+			errMsg=mongoSrv.addData(symbDb, symArray);
+		}
+		if (!this.selectedGroup.isEmpty()) {
+			LOGGER.log(Level.INFO, "selected group="+this.selectedGroup);
+			this.groupName=this.selectedGroup;
+			symbDb="";
+			List<String> symbLst = mongoSrv.readData(this.getSelectedGroup());
+			for (String s:symbLst) {
+				LOGGER.log(Level.INFO, "adding1 "+s);
+				symbDb=symbDb.concat(s+"\n");
+			}
+			
 		}
 		this.btn2 = btn2;
 	}
@@ -170,11 +207,9 @@ public class FormBean {
 	}
 	
 	private void loadData() {
-		symArray = symbDb.split("\n");
+		
 		MongoSrv mongoSrv=new MongoSrv();
-		for( int i=0; i < symArray.length;i++) {
-			System.out.println("elem="+symArray[i]);
-		}
+		
 	}
 
 	private void processData() {
@@ -247,9 +282,7 @@ public class FormBean {
 							.convertOption(googleOptionsJson, expiration);
 					nbLine += addOptionQuote(optionQuotes, stockQuote,
 							putOption);
-
 				}
-
 			}
 			stockQuotes.add(stockQuote);
 		}

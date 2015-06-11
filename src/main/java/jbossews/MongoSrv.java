@@ -3,7 +3,9 @@ package jbossews;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
+import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -19,8 +21,11 @@ public class MongoSrv {
 
 	public static void main(String[] args) throws UnknownHostException {
 		MongoSrv srv = new MongoSrv();
-		String[] strings = { "a", "b", "c" };
-		srv.addData("canOpt2", strings);
+		//String[] strings = { "a", "b", "c" };
+		//srv.addData("canOpt2", strings);
+		List<String> res = srv.readData("canOpt");
+		for (String r:res) System.out.println("elelm="+r);
+		//srv.readData("canOpt");
 
 	}
 
@@ -35,7 +40,7 @@ public class MongoSrv {
 
 	}
 
-	public void addData(String grName, String[] lst) {
+	public String addData(String grName, String[] lst) {
 		MongoClient mongoClient = null;
 		try {
 			mongoClient = new MongoClient();
@@ -50,17 +55,20 @@ public class MongoSrv {
 		whereQuery.put("name", grName);
 		DBCursor cursor = coll.find(whereQuery);
 		if (cursor.hasNext()) {
-			System.out.println("This object already exist " + grName);
+			return "This object already exists";
+			
 		}
 
 		else {
 			symlst.put("name", grName);
 			symlst.put("symbols", lst);
 			coll.insert(symlst);
+			return null;
 		}
 	}
 	
-	public String [] readData(String grName) {
+	public List<String> readGroup() {
+		List<String> res=new ArrayList<String>();
 		MongoClient mongoClient = null;
 		try {
 			mongoClient = new MongoClient();
@@ -70,13 +78,32 @@ public class MongoSrv {
 		}
 		DB db = mongoClient.getDB(database);
 		DBCollection coll = db.getCollection(collection);
-		BasicDBObject symlst = new BasicDBObject();
+		DBCursor cursor = coll.find();
+		while (cursor.hasNext()) {
+			res.add((String) cursor.next().get("name"));
+		}
+		return res;
+	}
+	
+	public List<String> readData(String grName) {
+		DBObject res;
+		List<String> rs2=null;
+		MongoClient mongoClient = null;
+		try {
+			mongoClient = new MongoClient();
+		} catch (UnknownHostException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		DB db = mongoClient.getDB(database);	
+		DBCollection coll = db.getCollection(collection);
 		BasicDBObject whereQuery = new BasicDBObject();
 		whereQuery.put("name", grName);
 		DBCursor cursor = coll.find(whereQuery);
-		while (cursor.hasNext()) {
-			
+		if (cursor.hasNext()) {
+			res=cursor.next();
+			rs2 = (List<String>) res.get("symbols");	
 		}
-		return null;
+		return rs2;
 	}
 }

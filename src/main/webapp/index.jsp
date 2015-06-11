@@ -282,9 +282,25 @@ pre {
 					</table>
 				</section>
 				<section class="col-xs-12 col-sm-6 col-md-6">
-					Group name: <input type="text" name="groupName" /><br />
-					<textarea rows="3" cols="30" name="symbDb"></textarea>
-					<br /> <input type="submit" name="btn2" />
+				<table>
+				<tr><td>New Group name 1:</td>
+					 <td><input type="text" name="groupName" value="${frm.groupName}"/></td>
+					 </tr>
+					 <tr><td>Group name:</td>
+					 <td><select name="selectedGroup">
+					 <c:forEach items="${frm.groupNameExist }" var="elem">
+						 <option value="">-- Select --</option>
+					 	<option value="${elem}">${elem}</option>					 	
+					 </c:forEach>
+					 </select>
+					 </td>
+					 </tr>
+					 <tr><td>Symbols:</td>
+					<td><textarea rows="3" cols="30" name="symbDb" ><c:out value="${frm.symbDb}" /></textarea></td>
+					</tr>
+					<tr><td><input type="submit" name="btn2" /></td>
+					<p style="color:red"><c:out value="${frm.errMsg}" /></p>
+					</table>
 					<h3>Debugging</h3>
 					<p>
 						<a href="snoop.jsp">View debugging information</a> about the
