@@ -172,36 +172,36 @@ public class FormBean {
 	
 	public FormBean() {
 		LOGGER.log(Level.INFO,"In FormBean constructor");
-		LOGGER.log(Level.FINE, "Level fine activated");
+		LOGGER.log(Level.INFO, "Level INFO activated");
 	}
 	
 	public List<String> getMsg() {
-		LOGGER.log(Level.FINE, "getMsg");
+		LOGGER.log(Level.INFO, "getMsg");
 		return msg;
 	}
 
 	public void setMsg(List<String> msg) {
-		LOGGER.log(Level.FINE, "setMsg");
+		LOGGER.log(Level.INFO, "setMsg");
 		this.msg = msg;
 	}
 
 	public String getUnique() {
-		LOGGER.log(Level.FINE, "getUnique");
+		LOGGER.log(Level.INFO, "getUnique");
 		return unique;
 	}
 
 	public void setUnique(String unique) {
-		LOGGER.log(Level.FINE, "setUnique");
+		LOGGER.log(Level.INFO, "setUnique");
 		this.unique = unique;
 	}
 
 	public String getNoStrikeBelowCurrent() {
-		LOGGER.log(Level.FINE, "getNoStrikeBelowCurrent");
+		LOGGER.log(Level.INFO, "getNoStrikeBelowCurrent");
 		return noStrikeBelowCurrent;
 	}
 
 	public void setNoStrikeBelowCurrent(String noStrikeBelowCurrent) {
-		LOGGER.log(Level.FINE, "setNoStrikeBelowCurrent");
+		LOGGER.log(Level.INFO, "setNoStrikeBelowCurrent");
 		this.noStrikeBelowCurrent = noStrikeBelowCurrent;
 	}
 
@@ -222,32 +222,32 @@ public class FormBean {
 	}
 
 	public ByteArrayOutputStream getOut() {
-		LOGGER.log(Level.FINE, "getOut");
+		LOGGER.log(Level.INFO, "getOut");
 		return out;
 	}
 
 	public void setOut(ByteArrayOutputStream out) {
-		LOGGER.log(Level.FINE, "setOut");
+		LOGGER.log(Level.INFO, "setOut");
 		this.out = out;
 	}
 
 	public boolean getReady() {
-		LOGGER.log(Level.FINE, "getReady "+symbLst);
+		LOGGER.log(Level.INFO, "getReady "+symbLst);
 		return ready;
 	}
 
 	public void setReady(boolean ready) {
-		LOGGER.log(Level.FINE, "setReady");
+		LOGGER.log(Level.INFO, "setReady");
 		this.ready = ready;
 	}
 
 	public String getSymbLst() {
-		LOGGER.log(Level.FINE, "getSymbLst");
+		LOGGER.log(Level.INFO, "getSymbLst");
 		return symbLst;
 	}
 
 	public void setSymbLst(String symbLst) {
-		LOGGER.log(Level.FINE, "setSymbLst");
+		LOGGER.log(Level.INFO, "setSymbLst");
 		this.symbLst = symbLst;
 	}
 	
@@ -264,7 +264,7 @@ public class FormBean {
 		callOptionsFilter.setNoStrikeBelowCurrent(noStrikeBelowCurrent.equalsIgnoreCase("Y"));
 		callOptionsFilter.setNoZeroInterest(zeroint.equalsIgnoreCase("Y"));
 		if (!expMonthFrom.isEmpty()) {
-			LOGGER.log(Level.FINE, "Setting expMonth of filter at "+expMonthFrom);
+			LOGGER.log(Level.INFO, "Setting expMonth of filter at "+expMonthFrom);
 			callOptionsFilter.setExpMonthFrom(expMonthFrom);
 			callOptionsFilter.setExpMonthTo(expMonthTo);
 		}
@@ -298,7 +298,7 @@ public class FormBean {
 				List<OptionQuote> optionQuotes = tsxOptionsReader
 						.readOptionQuote(symbol.replace(".TO", ""));
 				if (optionQuotes == null) {
-					msg.add("No option defined for TSX symbol "+symbol);
+					msg.add("No option deINFOd for TSX symbol "+symbol);
 					continue;
 				} else {
 					nbLine += addOptionQuote(optionQuotes, stockQuote,
