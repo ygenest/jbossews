@@ -25,7 +25,8 @@ public class FormBean {
 	private String delGroup="N";
 	private String zeroint="N";
 	private String groupName="";
-	private String selectedGroup;
+	private String selectedGroup="";
+	private String selectedGroupPr="";
 	private String symbDb="";
 	private List<String> msg=new ArrayList<String>();
 	private boolean ready = false;
@@ -40,6 +41,7 @@ public class FormBean {
 	private String errMsg;
 	
 
+	
 	public String getDelGroup() {
 		return delGroup;
 	}
@@ -48,6 +50,13 @@ public class FormBean {
 		this.delGroup = delGroup;
 	}
 
+	public String getSelectedGroupPr() {
+		return selectedGroupPr;
+	}
+
+	public void setSelectedGroupPr(String selectedGroupPr) {
+		this.selectedGroupPr = selectedGroupPr;
+	}
 	
 	public List<String> getGroupNameExist() {
 		MongoSrv mongoSrv=new MongoSrv();
@@ -96,8 +105,8 @@ public class FormBean {
 		}
 		if (!this.selectedGroup.isEmpty() && !this.symbDb.isEmpty())  {
 			LOGGER.log(Level.INFO, "Updating data");
+			groupName=this.selectedGroup;
 			mongoSrv.deleteGroup(this.selectedGroup);
-			symbDb="";
 			String [] symArray = symbDb.split("\n");
 			errMsg=mongoSrv.addData(groupName, symArray);
 			this.symbDb="";
@@ -112,9 +121,7 @@ public class FormBean {
 			for (String s:symbLst) {
 				symbDb=symbDb.concat(s+"\n");
 			}	
-		}
-		
-		
+		}		
 	}
 
 
@@ -150,8 +157,16 @@ public class FormBean {
 	public void setBtn1(String btn1) {
 		LOGGER.log(Level.INFO, "setBtn1");
 		this.btn1 = btn1;
+		if (!this.selectedGroupPr.isEmpty()) {
+			MongoSrv mongoSrv=new MongoSrv();
+			List<String> res = mongoSrv.readData(this.selectedGroupPr);
+			String[] arr=new String[res.size()];
+			arr=res.toArray(arr);
+			processData(arr);
+			return;
+		}
 		if (!this.symbLst.isEmpty()) {
-			processData();
+			processData(symbLst.split("\n"));
 		}
 	}
 	
@@ -242,8 +257,7 @@ public class FormBean {
 		
 	}
 
-	private void processData() {
-		String [] symArray = symbLst.split("\n");
+	private void processData(String... symArray) {
 		if (!expMonthFrom.isEmpty() && expMonthTo.isEmpty()) {
 			expMonthTo=expMonthFrom;
 		}

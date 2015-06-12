@@ -262,6 +262,15 @@ pre {
 								name="expMonthTo">
 							</td>
 						</tr>
+						<tr><td>
+						Select a group or enter symbols
+						<select name="selectedGroupPr">
+					 <option value="">-- Select --</option>
+					 <c:forEach items="${frm.groupNameExist }" var="elem">				 
+					 	<option value="${elem}">${elem}</option>					 	
+					 </c:forEach>
+					 </select>
+					 </td></tr>
 						<tr>
 							<td><textarea rows="3" cols="30" name="symbLst"></textarea>
 							</td>
