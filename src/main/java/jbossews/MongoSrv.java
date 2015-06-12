@@ -18,6 +18,7 @@ import com.mongodb.ServerAddress;
 public class MongoSrv {
 	String database = "ccdb";
 	String collection = "symlst";
+	MongoClient mongoClient=null;
 
 	public static void main(String[] args) throws UnknownHostException {
 		MongoSrv srv = new MongoSrv();
@@ -29,25 +30,27 @@ public class MongoSrv {
 
 	}
 
-	public void connect() throws UnknownHostException {
-		// String userName="admin";
-		// char [] password={};
-
-		// MongoCredential credential =
-		// MongoCredential.createCredential(userName, database, password);
-		// MongoClient mongoClient = new MongoClient(new ServerAddress(),
-		// Arrays.asList(credential));
-
-	}
+//	public MongoSrv() {
+//		 String userName="admin";
+//		 //char [] password={'J','3','E','7','B','k','h','d','s','z','C','z'};
+//		 char [] password={'a'};
+//		 //MongoCredential credential = MongoCredential.createCredential(userName, database, password);
+//		 try {
+//			//mongoClient = new MongoClient(new ServerAddress(),Arrays.asList(credential));
+//			mongoClient = new MongoClient();
+//		} catch (UnknownHostException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//
+//	}
 
 	public String addData(String grName, String[] lst) {
-		MongoClient mongoClient = null;
 		try {
 			mongoClient = new MongoClient();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return "Error accessing database (addData)";
 		}
 		DB db = mongoClient.getDB(database);
 		DBCollection coll = db.getCollection(collection);
@@ -69,16 +72,15 @@ public class MongoSrv {
 	}
 	
 	public String deleteGroup(String grName) {
-		DBObject res;
-		List<String> rs2=null;
-		MongoClient mongoClient = null;
 		try {
 			mongoClient = new MongoClient();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
 		}
+		DBObject res;
+		List<String> rs2=null;
+
 		DB db = mongoClient.getDB(database);	
 		DBCollection coll = db.getCollection(collection);
 		BasicDBObject whereQuery = new BasicDBObject();
@@ -96,15 +98,14 @@ public class MongoSrv {
 	}
 	
 	public List<String> readGroup() {
-		List<String> res=new ArrayList<String>();
-		MongoClient mongoClient = null;
 		try {
 			mongoClient = new MongoClient();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
 		}
+		List<String> res=new ArrayList<String>();
+
 		DB db = mongoClient.getDB(database);
 		DBCollection coll = db.getCollection(collection);
 		DBCursor cursor = coll.find();
@@ -115,16 +116,14 @@ public class MongoSrv {
 	}
 	
 	public List<String> readData(String grName) {
-		DBObject res;
-		List<String> rs2=null;
-		MongoClient mongoClient = null;
 		try {
 			mongoClient = new MongoClient();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return null;
 		}
+		DBObject res;
+		List<String> rs2=null;
 		DB db = mongoClient.getDB(database);	
 		DBCollection coll = db.getCollection(collection);
 		BasicDBObject whereQuery = new BasicDBObject();
