@@ -33,7 +33,7 @@ public class MongoSrv {
 	public MongoSrv() {
 		 String userName="admin";
 		 String password="J3E7BkhdszCz";
-//		 char [] password={'a'};
+		 //String password="admsys";
 		 MongoCredential credential = MongoCredential.createCredential(userName, database, password.toCharArray());
 		 try {
 			mongoClient = new MongoClient(new ServerAddress(),Arrays.asList(credential));
