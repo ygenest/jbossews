@@ -17,7 +17,7 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 
 public class MongoSrv {
-	String database = "ccdb";
+	String database = "jbossews";
 	String collection = "symlst";
 	MongoClient mongoClient=null;
 
