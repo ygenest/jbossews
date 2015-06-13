@@ -17,7 +17,7 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 
 public class MongoSrv {
-	String database = "jbossews";
+	String database = null;
 	String collection = "symlst";
 	MongoClient mongoClient=null;
 
@@ -31,9 +31,11 @@ public class MongoSrv {
 	}
 
 	public MongoSrv() {
-		 String userName="admin";
-		 String password="J3E7BkhdszCz";
-		 //String password="admsys";
+		database = "jbossews";		
+		String userName="admin";
+		//String userName="ygenest";
+		String password="J3E7BkhdszCz";
+		// String password="admsys";
 		 MongoCredential credential = MongoCredential.createCredential(userName, database, password.toCharArray());
 		 try {
 			mongoClient = new MongoClient(new ServerAddress(),Arrays.asList(credential));
