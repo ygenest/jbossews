@@ -42,9 +42,9 @@ public class MongoSrv {
 			e1.printStackTrace();
 		}
 		database = "jbossews";		
-		String userName="admin";
+		String userName=System.getenv("OPENSHIFT_MONGODB_DB_USERNAME");
 		//String userName="ygenest";
-		String password="J3E7BkhdszCz";
+		String password=System.getenv("OPENSHIFT_MONGODB_DB_PASSWORD");
 		// String password="admsys";
 		 MongoCredential credential = MongoCredential.createCredential(userName, database, password.toCharArray());
 		mongoClient = new MongoClient(adr,Arrays.asList(credential));
