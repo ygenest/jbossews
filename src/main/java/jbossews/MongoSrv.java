@@ -31,9 +31,9 @@ public class MongoSrv {
 	}
 
 	public MongoSrv() {
-		 String userName="admin";
-		 String password="J3E7BkhdszCz";
-		 //String password="admsys";
+		 String userName="ygenest";
+		 //String password="J3E7BkhdszCz";
+		 String password="admsys";
 		 MongoCredential credential = MongoCredential.createCredential(userName, database, password.toCharArray());
 		 try {
 			mongoClient = new MongoClient(new ServerAddress(),Arrays.asList(credential));

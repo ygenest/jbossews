@@ -43,50 +43,62 @@ public class FormBean {
 
 	
 	public String getDelGroup() {
+		LOGGER.log(Level.INFO, "getDelGroup");
 		return delGroup;
 	}
 
 	public void setDelGroup(String delGroup) {
+		LOGGER.log(Level.INFO, "setDelGroup");
 		this.delGroup = delGroup;
 	}
 
 	public String getSelectedGroupPr() {
+		LOGGER.log(Level.INFO, "getSelectedGroupPr");
 		return selectedGroupPr;
 	}
 
 	public void setSelectedGroupPr(String selectedGroupPr) {
+		LOGGER.log(Level.INFO, "setSelectedGroupPr");
 		this.selectedGroupPr = selectedGroupPr;
 	}
 	
 	public List<String> getGroupNameExist() {
+		LOGGER.log(Level.INFO, "getGroupNameExist");
 		MongoSrv mongoSrv=new MongoSrv();
+		LOGGER.log(Level.INFO, "mongoSrv instanciated: "+mongoSrv);
 		return mongoSrv.readGroup();
 	}
 	
 	public String getErrMsg() {
+		LOGGER.log(Level.INFO, "getErrMsg");
 		return errMsg;
 	}
 
 	public void setErrMsg(String errMsg) {
+		LOGGER.log(Level.INFO, "setErrMsg");
 		this.errMsg = errMsg;
 	}
 
 	public String getBtn2() {
+		LOGGER.log(Level.INFO, "getBtn2");
 		return btn2;
 	}
 	
 	public String getSelectedGroup() {
+		LOGGER.log(Level.INFO, "getSelectedGroup");
 		return selectedGroup;
 	}
 
 	public void setSelectedGroup(String selectedGroup) {
+		LOGGER.log(Level.INFO, "setSelectedGroup");
 		this.selectedGroup = selectedGroup;
 	}
 
 	public void setBtn2(String btn2) {
+		LOGGER.log(Level.INFO, "setBtn2");
 		this.btn2 = btn2;
 		MongoSrv mongoSrv=new MongoSrv();
-		LOGGER.log(Level.INFO, "setBtn2");
+		LOGGER.log(Level.INFO, "mongoSrv instanciated: "+mongoSrv);
 		this.btn2 = btn2;
 		if (!this.symbDb.isEmpty() && !this.groupName.isEmpty()) {
 			LOGGER.log(Level.INFO, "Adding data");
@@ -126,26 +138,32 @@ public class FormBean {
 
 
 	public String getGroupName() {
+		LOGGER.log(Level.INFO, "getGroupName");
 		return groupName;
 	}
 
 	public void setGroupName(String groupName) {
+		LOGGER.log(Level.INFO, "setGroupName");
 		this.groupName = groupName;
 	}
 
 	public String getSymbDb() {
+		LOGGER.log(Level.INFO, "getSymbDb");
 		return symbDb;
 	}
 
 	public void setSymbDb(String symbDb) {
+		LOGGER.log(Level.INFO, "setSymbDb");
 		this.symbDb = symbDb;
 	}
 	
 	public String getZeroint() {
+		LOGGER.log(Level.INFO, "getZeroint");
 		return zeroint;
 	}
 
 	public void setZeroint(String zeroint) {
+		LOGGER.log(Level.INFO, "setZeroint");
 		this.zeroint = zeroint;
 	}
 
@@ -172,7 +190,6 @@ public class FormBean {
 	
 	public FormBean() {
 		LOGGER.log(Level.INFO,"In FormBean constructor");
-		LOGGER.log(Level.INFO, "Level INFO activated");
 	}
 	
 	public List<String> getMsg() {
@@ -206,18 +223,22 @@ public class FormBean {
 	}
 
 	public String getExpMonthFrom() {
+		LOGGER.log(Level.INFO, "getExpMonthFrom");
 		return expMonthFrom;
 	}
 
 	public void setExpMonthFrom(String expMonthFrom) {
+		LOGGER.log(Level.INFO, "setExpMonthFrom");
 		this.expMonthFrom = expMonthFrom;
 	}
 
 	public String getExpMonthTo() {
+		LOGGER.log(Level.INFO, "getExpMonthTo");
 		return expMonthTo;
 	}
 
 	public void setExpMonthTo(String expMonthTo) {
+		LOGGER.log(Level.INFO, "setExpMonthTo");
 		this.expMonthTo = expMonthTo;
 	}
 
@@ -249,15 +270,10 @@ public class FormBean {
 	public void setSymbLst(String symbLst) {
 		LOGGER.log(Level.INFO, "setSymbLst");
 		this.symbLst = symbLst;
-	}
-	
-	private void loadData() {
-		
-		MongoSrv mongoSrv=new MongoSrv();
-		
-	}
+	}	
 
 	private void processData(String... symArray) {
+		LOGGER.log(Level.INFO, "processData");
 		if (!expMonthFrom.isEmpty() && expMonthTo.isEmpty()) {
 			expMonthTo=expMonthFrom;
 		}
@@ -273,6 +289,7 @@ public class FormBean {
 	}
 
 	public void readQuotes(String... symArray) {
+		LOGGER.log(Level.INFO, "readQuotes");
 		List<String> symbols = Arrays.asList(symArray);
 		GoogleStockReader googleStockReader = new GoogleStockReader();
 		TsxOptionsReader tsxOptionsReader = new TsxOptionsReader(putOption);
@@ -332,12 +349,14 @@ public class FormBean {
 		}
 
 		CsvWriter csvWriter = new CsvWriter();
+		LOGGER.log(Level.INFO, "Quotes ready");
 		out = csvWriter.write(stockQuotes);
 
 	}
 
 	private  int addOptionQuote(List<OptionQuote> optionQuotes,
 			StockQuote stockQuote, boolean putOption) {
+		LOGGER.log(Level.INFO, "addOptionQuote");
 		int count = 0;
 		for (OptionQuote optionQuote : optionQuotes) {
 			optionQuote.setStockPrice(stockQuote.getLast());
