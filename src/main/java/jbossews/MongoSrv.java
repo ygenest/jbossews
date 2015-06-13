@@ -31,13 +31,13 @@ public class MongoSrv {
 	}
 
 	public MongoSrv() {
-		 String userName="ygenest";
+		 //String userName="ygenest";
 		 //String password="J3E7BkhdszCz";
-		 String password="admsys";
-		 MongoCredential credential = MongoCredential.createCredential(userName, database, password.toCharArray());
+		 //String password="admsys";
+		 //MongoCredential credential = MongoCredential.createCredential(userName, database, password.toCharArray());
 		 try {
-			mongoClient = new MongoClient(new ServerAddress(),Arrays.asList(credential));
-			//mongoClient = new MongoClient();
+			//mongoClient = new MongoClient(new ServerAddress(),Arrays.asList(credential));
+			mongoClient = new MongoClient();
 		} catch (UnknownHostException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
