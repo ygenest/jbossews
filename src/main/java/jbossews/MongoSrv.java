@@ -31,20 +31,24 @@ public class MongoSrv {
 	}
 
 	public MongoSrv() {
+		ServerAddress adr=null;
+		String host = System.getenv("OPENSHIFT_MONGODB_DB_HOST");
+		String sport = System.getenv("OPENSHIFT_MONGODB_DB_PORT");
+		int port=Integer.decode(sport);
+		try {
+			adr=new ServerAddress(host, port);
+		} catch (UnknownHostException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		database = "jbossews";		
 		String userName="admin";
 		//String userName="ygenest";
 		String password="J3E7BkhdszCz";
 		// String password="admsys";
 		 MongoCredential credential = MongoCredential.createCredential(userName, database, password.toCharArray());
-		 try {
-			mongoClient = new MongoClient(new ServerAddress(),Arrays.asList(credential));
-			//mongoClient = new MongoClient();
-		} catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-//
+		mongoClient = new MongoClient(adr,Arrays.asList(credential));
+		//mongoClient = new MongoClient();
 	}
 
 	public String addData(String grName, String[] lst) {
