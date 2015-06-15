@@ -26,6 +26,9 @@ public class GoogleConverter {
     private static final int UNDEFINED = -1;
 
     public StockQuote convertStock(GoogleStockJson googleStockJson) {
+    	if (googleStockJson==null) {
+    		return null;
+    	}
         StockQuote stockQuote = new StockQuote();
         stockQuote.setName(googleStockJson.getName());
         stockQuote.setSymbol(googleStockJson.getSymbol());
