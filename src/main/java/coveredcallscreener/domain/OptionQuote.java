@@ -24,7 +24,7 @@ public class OptionQuote {
 
     private double getPriceToCalculateYield() {
         double priceToCalculateYield;
-        if (this.getBid() != UNDEFINED && this.getAsk() != UNDEFINED) {
+        if (this.getBid() >0  && this.getAsk() >0) {
             priceToCalculateYield = (this.getAsk() + this.getBid()) / 2d;
         } else {
             priceToCalculateYield = this.getLast();

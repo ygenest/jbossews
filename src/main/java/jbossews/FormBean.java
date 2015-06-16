@@ -3,6 +3,7 @@ package jbossews;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,29 +20,28 @@ import coveredcallscreener.readers.TsxOptionsReader;
 import coveredcallscreener.writers.CsvWriter;
 
 public class FormBean {
-	private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-	CallOptionsFilter callOptionsFilter=new CallOptionsFilter();
-	private String symbLst="";
-	private String delGroup="N";
-	private String zeroint="N";
-	private String groupName="";
-	private String selectedGroup="";
-	private String selectedGroupPr="";
-	private String symbDb="";
-	private List<String> msg=new ArrayList<String>();
+	private final static Logger LOGGER = Logger
+			.getLogger(Logger.GLOBAL_LOGGER_NAME);
+	CallOptionsFilter callOptionsFilter = new CallOptionsFilter();
+	private String symbLst = "";
+	private String delGroup = "N";
+	private String zeroint = "N";
+	private String groupName = "";
+	private String selectedGroup = "";
+	private String selectedGroupPr = "";
+	private String symbDb = "";
+	private List<String> msg = new ArrayList<String>();
 	private boolean ready = false;
-	private String noStrikeBelowCurrent="N";
+	private String noStrikeBelowCurrent = "N";
 	private boolean putOption = false;
 	private String unique = "N";
-	private String expMonthFrom="";
-	private String expMonthTo="";
+	private String expMonthFrom = "";
+	private String expMonthTo = "";
 	private ByteArrayOutputStream out;
 	private String btn1;
 	private String btn2;
 	private String errMsg;
-	
 
-	
 	public String getDelGroup() {
 		return delGroup;
 	}
@@ -57,12 +57,12 @@ public class FormBean {
 	public void setSelectedGroupPr(String selectedGroupPr) {
 		this.selectedGroupPr = selectedGroupPr;
 	}
-	
+
 	public List<String> getGroupNameExist() {
-		MongoSrv mongoSrv=new MongoSrv();
+		MongoSrv mongoSrv = new MongoSrv();
 		return mongoSrv.readGroup();
 	}
-	
+
 	public String getErrMsg() {
 		return errMsg;
 	}
@@ -74,7 +74,7 @@ public class FormBean {
 	public String getBtn2() {
 		return btn2;
 	}
-	
+
 	public String getSelectedGroup() {
 		return selectedGroup;
 	}
@@ -85,45 +85,45 @@ public class FormBean {
 
 	public void setBtn2(String btn2) {
 		this.btn2 = btn2;
-		MongoSrv mongoSrv=new MongoSrv();
-		LOGGER.log(Level.INFO, "setBtn2");
+		MongoSrv mongoSrv = new MongoSrv();
+		LOGGER.log(Level.FINE, "setBtn2");
 		this.btn2 = btn2;
 		if (!this.symbDb.isEmpty() && !this.groupName.isEmpty()) {
-			LOGGER.log(Level.INFO, "Adding data");
-			String [] symArray = symbDb.split("\n");
-			errMsg=mongoSrv.addData(groupName, symArray);
-			this.symbDb="";
-			this.groupName="";
+			LOGGER.log(Level.FINE, "Adding data");
+			String[] symArray = symbDb.split("\n");
+			errMsg = mongoSrv.addData(groupName, symArray);
+			this.symbDb = "";
+			this.groupName = "";
 			return;
 		}
-		if (!this.selectedGroup.isEmpty() && this.delGroup.equalsIgnoreCase("Y")) {
-			LOGGER.log(Level.INFO, "Deleting data");
+		if (!this.selectedGroup.isEmpty()
+				&& this.delGroup.equalsIgnoreCase("Y")) {
+			LOGGER.log(Level.FINE, "Deleting data");
 			mongoSrv.deleteGroup(this.selectedGroup);
-			this.selectedGroup="";
-			this.delGroup="N";
+			this.selectedGroup = "";
+			this.delGroup = "N";
 			return;
 		}
-		if (!this.selectedGroup.isEmpty() && !this.symbDb.isEmpty())  {
-			LOGGER.log(Level.INFO, "Updating data");
-			groupName=this.selectedGroup;
+		if (!this.selectedGroup.isEmpty() && !this.symbDb.isEmpty()) {
+			LOGGER.log(Level.FINE, "Updating data");
+			groupName = this.selectedGroup;
 			mongoSrv.deleteGroup(this.selectedGroup);
-			String [] symArray = symbDb.split("\n");
-			errMsg=mongoSrv.addData(groupName, symArray);
-			this.symbDb="";
-			this.groupName="";
+			String[] symArray = symbDb.split("\n");
+			errMsg = mongoSrv.addData(groupName, symArray);
+			this.symbDb = "";
+			this.groupName = "";
 			return;
 		}
-		
-		if (!this.selectedGroup.isEmpty()) {
-			LOGGER.log(Level.INFO, "Reading data");
-			symbDb="";
-			List<String> symbLst = mongoSrv.readData(this.getSelectedGroup());
-			for (String s:symbLst) {
-				symbDb=symbDb.concat(s+"\n");
-			}	
-		}		
-	}
 
+		if (!this.selectedGroup.isEmpty()) {
+			LOGGER.log(Level.FINE, "Reading data");
+			symbDb = "";
+			List<String> symbLst = mongoSrv.readData(this.getSelectedGroup());
+			for (String s : symbLst) {
+				symbDb = symbDb.concat(s + "\n");
+			}
+		}
+	}
 
 	public String getGroupName() {
 		return groupName;
@@ -140,7 +140,7 @@ public class FormBean {
 	public void setSymbDb(String symbDb) {
 		this.symbDb = symbDb;
 	}
-	
+
 	public String getZeroint() {
 		return zeroint;
 	}
@@ -150,18 +150,18 @@ public class FormBean {
 	}
 
 	public String getBtn1() {
-		LOGGER.log(Level.INFO, "getBtn1");
+		LOGGER.log(Level.FINE, "getBtn1");
 		return btn1;
 	}
 
 	public void setBtn1(String btn1) {
-		LOGGER.log(Level.INFO, "setBtn1");
+		LOGGER.log(Level.FINE, "setBtn1");
 		this.btn1 = btn1;
 		if (!this.selectedGroupPr.isEmpty()) {
-			MongoSrv mongoSrv=new MongoSrv();
+			MongoSrv mongoSrv = new MongoSrv();
 			List<String> res = mongoSrv.readData(this.selectedGroupPr);
-			String[] arr=new String[res.size()];
-			arr=res.toArray(arr);
+			String[] arr = new String[res.size()];
+			arr = res.toArray(arr);
 			processData(arr);
 			return;
 		}
@@ -169,12 +169,12 @@ public class FormBean {
 			processData(symbLst.split("\n"));
 		}
 	}
-	
+
 	public FormBean() {
-		LOGGER.log(Level.INFO,"In FormBean constructor");
+		LOGGER.log(Level.FINE, "In FormBean constructor");
 		LOGGER.log(Level.FINE, "Level fine activated");
 	}
-	
+
 	public List<String> getMsg() {
 		LOGGER.log(Level.FINE, "getMsg");
 		return msg;
@@ -232,7 +232,7 @@ public class FormBean {
 	}
 
 	public boolean getReady() {
-		LOGGER.log(Level.FINE, "getReady "+symbLst);
+		LOGGER.log(Level.FINE, "getReady " + symbLst);
 		return ready;
 	}
 
@@ -250,21 +250,23 @@ public class FormBean {
 		LOGGER.log(Level.FINE, "setSymbLst");
 		this.symbLst = symbLst;
 	}
-	
+
 	private void loadData() {
-		
-		MongoSrv mongoSrv=new MongoSrv();
-		
+
+		MongoSrv mongoSrv = new MongoSrv();
+
 	}
 
 	private void processData(String... symArray) {
 		if (!expMonthFrom.isEmpty() && expMonthTo.isEmpty()) {
-			expMonthTo=expMonthFrom;
+			expMonthTo = expMonthFrom;
 		}
-		callOptionsFilter.setNoStrikeBelowCurrent(noStrikeBelowCurrent.equalsIgnoreCase("Y"));
+		callOptionsFilter.setNoStrikeBelowCurrent(noStrikeBelowCurrent
+				.equalsIgnoreCase("Y"));
 		callOptionsFilter.setNoZeroInterest(zeroint.equalsIgnoreCase("Y"));
 		if (!expMonthFrom.isEmpty()) {
-			LOGGER.log(Level.FINE, "Setting expMonth of filter at "+expMonthFrom);
+			LOGGER.log(Level.FINE, "Setting expMonth of filter at "
+					+ expMonthFrom);
 			callOptionsFilter.setExpMonthFrom(expMonthFrom);
 			callOptionsFilter.setExpMonthTo(expMonthTo);
 		}
@@ -287,18 +289,17 @@ public class FormBean {
 				// process symbols for TSX exchange
 				googleStockJson = googleStockReader.readStockQuote("TSE:"
 						+ symbol.replace(".TO", ""));
-				stockQuote = googleConverter.convertStock(googleStockJson);
-
-				if (stockQuote == null) {
-					msg.add("Skipping unknown TSX symbol "+symbol);
+				if (googleStockJson == null) {
+					msg.add("Skipping unknown TSX symbol " + symbol);
 					continue;
 				}
+				stockQuote = googleConverter.convertStock(googleStockJson);
 				stockQuote.setSymbol(googleStockJson.getSymbol() + ":"
 						+ googleStockJson.getExchange());
 				List<OptionQuote> optionQuotes = tsxOptionsReader
 						.readOptionQuote(symbol.replace(".TO", ""));
 				if (optionQuotes == null) {
-					msg.add("No option defined for TSX symbol "+symbol);
+					msg.add("No option defined for TSX symbol " + symbol);
 					continue;
 				} else {
 					nbLine += addOptionQuote(optionQuotes, stockQuote,
@@ -308,7 +309,7 @@ public class FormBean {
 				// process symbols for US exchanges
 				googleStockJson = googleStockReader.readStockQuote(symbol);
 				if (googleStockJson == null) {
-					msg.add("Skipping unknown US symbol "+symbol);
+					msg.add("Skipping unknown US symbol " + symbol);
 					continue;
 				}
 				stockQuote = googleConverter.convertStock(googleStockJson);
@@ -316,7 +317,7 @@ public class FormBean {
 				List<Expiration> expirations = googleStockReader
 						.readOptionExpiration(symbol);
 				if (expirations == null) {
-					msg.add("No options defined for US symbol "+symbol);
+					msg.add("No options defined for US symbol " + symbol);
 					continue;
 				}
 				for (Expiration expiration : expirations) {
@@ -336,16 +337,33 @@ public class FormBean {
 
 	}
 
-	private  int addOptionQuote(List<OptionQuote> optionQuotes,
+	private int addOptionQuote(List<OptionQuote> optionQuotes,
 			StockQuote stockQuote, boolean putOption) {
 		int count = 0;
+		Date prev = new Date();
 		for (OptionQuote optionQuote : optionQuotes) {
 			optionQuote.setStockPrice(stockQuote.getLast());
 			if (callOptionsFilter.filter(optionQuote, putOption)) {
-				stockQuote.getOptionQuotes().add(optionQuote);
-				count++;
+				LOGGER.log(
+						Level.FINE,
+						"expDat != prev= "
+								+ (optionQuote.getExparyDate().compareTo(prev)));
+				if (unique.equalsIgnoreCase("Y")
+						&& optionQuote.getExparyDate().compareTo(prev) != 0) {
+					LOGGER.log(Level.FINE, "Adding unique quote");
+					stockQuote.getOptionQuotes().add(optionQuote);
+					count++;
+
+				} else {
+					if (!unique.equalsIgnoreCase("Y")) {
+						LOGGER.log(Level.FINE, "Adding non unique quote");
+						stockQuote.getOptionQuotes().add(optionQuote);
+						count++;
+					}
+				}
+				prev.setTime((optionQuote.getExparyDate().getTime()));
 			}
-			if (unique.equalsIgnoreCase("Y") && count==1) return 1;
+
 		}
 		return count;
 	}

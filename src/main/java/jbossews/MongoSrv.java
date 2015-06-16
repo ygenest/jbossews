@@ -17,7 +17,7 @@ import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
 
 public class MongoSrv {
-	String database = "ccdb";
+	String database = null;
 	String collection = "symlst";
 	MongoClient mongoClient=null;
 
@@ -31,18 +31,24 @@ public class MongoSrv {
 	}
 
 	public MongoSrv() {
-		 String userName="admin";
-		 String password="J3E7BkhdszCz";
-//		 char [] password={'a'};
-		 MongoCredential credential = MongoCredential.createCredential(userName, database, password.toCharArray());
-		 try {
-			mongoClient = new MongoClient(new ServerAddress(),Arrays.asList(credential));
-			//mongoClient = new MongoClient();
-		} catch (UnknownHostException e) {
+		ServerAddress adr=null;
+		String host = System.getenv("OPENSHIFT_MONGODB_DB_HOST");
+		String sport = System.getenv("OPENSHIFT_MONGODB_DB_PORT");
+		int port=Integer.decode(sport);
+		try {
+			adr=new ServerAddress(host, port);
+		} catch (UnknownHostException e1) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			e1.printStackTrace();
 		}
-//
+		database = "jbossews";		
+		String userName=System.getenv("OPENSHIFT_MONGODB_DB_USERNAME");
+		//String userName="ygenest";
+		String password=System.getenv("OPENSHIFT_MONGODB_DB_PASSWORD");
+		// String password="admsys";
+		 MongoCredential credential = MongoCredential.createCredential(userName, database, password.toCharArray());
+		mongoClient = new MongoClient(adr,Arrays.asList(credential));
+		//mongoClient = new MongoClient();
 	}
 
 	public String addData(String grName, String[] lst) {
