@@ -43,59 +43,59 @@ public class FormBean {
 	private String errMsg;
 
 	public String getDelGroup() {
-		LOGGER.log(Level.INFO, "getDelGroup");
+		LOGGER.log(Level.FINE, "getDelGroup");
 		return delGroup;
 	}
 
 	public void setDelGroup(String delGroup) {
-		LOGGER.log(Level.INFO, "setDelGroup");
+		LOGGER.log(Level.FINE, "setDelGroup");
 		this.delGroup = delGroup;
 	}
 
 	public String getSelectedGroupPr() {
-		LOGGER.log(Level.INFO, "getSelectedGroupPr");
+		LOGGER.log(Level.FINE, "getSelectedGroupPr");
 		return selectedGroupPr;
 	}
 
 	public void setSelectedGroupPr(String selectedGroupPr) {
-		LOGGER.log(Level.INFO, "setSelectedGroupPr");
+		LOGGER.log(Level.FINE, "setSelectedGroupPr");
 		this.selectedGroupPr = selectedGroupPr;
 	}
 
 	public List<String> getGroupNameExist() {
-		MongoSrv mongoSrv=new MongoSrv();
+		MongoSrv mongoSrv = new MongoSrv();
 		return mongoSrv.readGroup();
 	}
 
 	public String getErrMsg() {
-		LOGGER.log(Level.INFO, "getErrMsg");
+		LOGGER.log(Level.FINE, "getErrMsg");
 		return errMsg;
 	}
 
 	public void setErrMsg(String errMsg) {
-		LOGGER.log(Level.INFO, "setErrMsg");
+		LOGGER.log(Level.FINE, "setErrMsg");
 		this.errMsg = errMsg;
 	}
 
 	public String getBtn2() {
-		LOGGER.log(Level.INFO, "getBtn2");
+		LOGGER.log(Level.FINE, "getBtn2");
 		return btn2;
 	}
 
 	public String getSelectedGroup() {
-		LOGGER.log(Level.INFO, "getSelectedGroup");
+		LOGGER.log(Level.FINE, "getSelectedGroup");
 		return selectedGroup;
 	}
 
 	public void setSelectedGroup(String selectedGroup) {
-		LOGGER.log(Level.INFO, "setSelectedGroup");
+		LOGGER.log(Level.FINE, "setSelectedGroup");
 		this.selectedGroup = selectedGroup;
 	}
 
 	public void setBtn2(String btn2) {
-		LOGGER.log(Level.INFO, "setBtn2");
+		LOGGER.log(Level.FINE, "setBtn2");
 		MongoSrv mongoSrv = new MongoSrv();
-		LOGGER.log(Level.INFO, "mongoSrv instanciated: "+mongoSrv);
+		LOGGER.log(Level.FINE, "mongoSrv instanciated: " + mongoSrv);
 		this.btn2 = btn2;
 		if (!this.symbDb.isEmpty() && !this.groupName.isEmpty()) {
 			LOGGER.log(Level.FINE, "Adding data");
@@ -135,32 +135,32 @@ public class FormBean {
 	}
 
 	public String getGroupName() {
-		LOGGER.log(Level.INFO, "getGroupName");
+		LOGGER.log(Level.FINE, "getGroupName");
 		return groupName;
 	}
 
 	public void setGroupName(String groupName) {
-		LOGGER.log(Level.INFO, "setGroupName");
+		LOGGER.log(Level.FINE, "setGroupName");
 		this.groupName = groupName;
 	}
 
 	public String getSymbDb() {
-		LOGGER.log(Level.INFO, "getSymbDb");
+		LOGGER.log(Level.FINE, "getSymbDb");
 		return symbDb;
 	}
 
 	public void setSymbDb(String symbDb) {
-		LOGGER.log(Level.INFO, "setSymbDb");
+		LOGGER.log(Level.FINE, "setSymbDb");
 		this.symbDb = symbDb;
 	}
 
 	public String getZeroint() {
-		LOGGER.log(Level.INFO, "getZeroint");
+		LOGGER.log(Level.FINE, "getZeroint");
 		return zeroint;
 	}
 
 	public void setZeroint(String zeroint) {
-		LOGGER.log(Level.INFO, "setZeroint");
+		LOGGER.log(Level.FINE, "setZeroint");
 		this.zeroint = zeroint;
 	}
 
@@ -187,67 +187,67 @@ public class FormBean {
 
 	public FormBean() {
 		LOGGER.log(Level.FINE, "In FormBean constructor");
+		LOGGER.log(Level.INFO, "Level info activated");
 		LOGGER.log(Level.FINE, "Level fine activated");
-
 	}
 
 	public List<String> getMsg() {
-		LOGGER.log(Level.INFO, "getMsg");
+		LOGGER.log(Level.FINE, "getMsg");
 		return msg;
 	}
 
 	public void setMsg(List<String> msg) {
-		LOGGER.log(Level.INFO, "setMsg");
+		LOGGER.log(Level.FINE, "setMsg");
 		this.msg = msg;
 	}
 
 	public String getUnique() {
-		LOGGER.log(Level.INFO, "getUnique");
+		LOGGER.log(Level.FINE, "getUnique");
 		return unique;
 	}
 
 	public void setUnique(String unique) {
-		LOGGER.log(Level.INFO, "setUnique");
+		LOGGER.log(Level.FINE, "setUnique");
 		this.unique = unique;
 	}
 
 	public String getNoStrikeBelowCurrent() {
-		LOGGER.log(Level.INFO, "getNoStrikeBelowCurrent");
+		LOGGER.log(Level.FINE, "getNoStrikeBelowCurrent");
 		return noStrikeBelowCurrent;
 	}
 
 	public void setNoStrikeBelowCurrent(String noStrikeBelowCurrent) {
-		LOGGER.log(Level.INFO, "setNoStrikeBelowCurrent");
+		LOGGER.log(Level.FINE, "setNoStrikeBelowCurrent");
 		this.noStrikeBelowCurrent = noStrikeBelowCurrent;
 	}
 
 	public String getExpMonthFrom() {
-		LOGGER.log(Level.INFO, "getExpMonthFrom");
+		LOGGER.log(Level.FINE, "getExpMonthFrom");
 		return expMonthFrom;
 	}
 
 	public void setExpMonthFrom(String expMonthFrom) {
-		LOGGER.log(Level.INFO, "setExpMonthFrom");
+		LOGGER.log(Level.FINE, "setExpMonthFrom");
 		this.expMonthFrom = expMonthFrom;
 	}
 
 	public String getExpMonthTo() {
-		LOGGER.log(Level.INFO, "getExpMonthTo");
+		LOGGER.log(Level.FINE, "getExpMonthTo");
 		return expMonthTo;
 	}
 
 	public void setExpMonthTo(String expMonthTo) {
-		LOGGER.log(Level.INFO, "setExpMonthTo");
+		LOGGER.log(Level.FINE, "setExpMonthTo");
 		this.expMonthTo = expMonthTo;
 	}
 
 	public ByteArrayOutputStream getOut() {
-		LOGGER.log(Level.INFO, "getOut");
+		LOGGER.log(Level.FINE, "getOut");
 		return out;
 	}
 
 	public void setOut(ByteArrayOutputStream out) {
-		LOGGER.log(Level.INFO, "setOut");
+		LOGGER.log(Level.FINE, "setOut");
 		this.out = out;
 	}
 
@@ -257,17 +257,17 @@ public class FormBean {
 	}
 
 	public void setReady(boolean ready) {
-		LOGGER.log(Level.INFO, "setReady");
+		LOGGER.log(Level.FINE, "setReady");
 		this.ready = ready;
 	}
 
 	public String getSymbLst() {
-		LOGGER.log(Level.INFO, "getSymbLst");
+		LOGGER.log(Level.FINE, "getSymbLst");
 		return symbLst;
 	}
 
 	public void setSymbLst(String symbLst) {
-		LOGGER.log(Level.INFO, "setSymbLst");
+		LOGGER.log(Level.FINE, "setSymbLst");
 		this.symbLst = symbLst;
 	}
 
@@ -275,9 +275,8 @@ public class FormBean {
 		MongoSrv mongoSrv = new MongoSrv();
 	}
 
-
 	private void processData(String... symArray) {
-		LOGGER.log(Level.INFO, "processData");
+		LOGGER.log(Level.FINE, "processData");
 		if (!expMonthFrom.isEmpty() && expMonthTo.isEmpty()) {
 			expMonthTo = expMonthFrom;
 		}
@@ -297,7 +296,7 @@ public class FormBean {
 	}
 
 	public void readQuotes(String... symArray) {
-		LOGGER.log(Level.INFO, "readQuotes");
+		LOGGER.log(Level.FINE, "readQuotes");
 		List<String> symbols = Arrays.asList(symArray);
 		GoogleStockReader googleStockReader = new GoogleStockReader();
 		TsxOptionsReader tsxOptionsReader = new TsxOptionsReader(putOption);
@@ -357,14 +356,14 @@ public class FormBean {
 		}
 
 		CsvWriter csvWriter = new CsvWriter();
-		LOGGER.log(Level.INFO, "Quotes ready");
+		LOGGER.log(Level.FINE, "Quotes ready");
 		out = csvWriter.write(stockQuotes);
 
 	}
 
 	private int addOptionQuote(List<OptionQuote> optionQuotes,
 			StockQuote stockQuote, boolean putOption) {
-		LOGGER.log(Level.INFO, "addOptionQuote");
+		LOGGER.log(Level.FINE, "addOptionQuote");
 		int count = 0;
 		Date prev = new Date();
 		for (OptionQuote optionQuote : optionQuotes) {
