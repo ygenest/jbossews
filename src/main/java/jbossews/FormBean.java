@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import coveredcallscreener.OptionScreener;
 import coveredcallscreener.converters.GoogleConverter;
 import coveredcallscreener.domain.json.option.Expiration;
 import coveredcallscreener.domain.json.option.GoogleOptionsJson;
@@ -170,19 +171,20 @@ public class FormBean {
 	}
 
 	public void setBtn1(String btn1) {
+		OptionScreener os= new OptionScreener(noStrikeBelowCurrent.equals("Y"),putOption, unique.equalsIgnoreCase("Y"),zeroint.equalsIgnoreCase("Y"),expMonthFrom, expMonthTo);
 		LOGGER.log(Level.FINE, "setBtn1");
 		this.btn1 = btn1;
 		if (!this.selectedGroupPr.isEmpty()) {
 			MongoSrv mongoSrv = new MongoSrv();
 			List<String> res = mongoSrv.readData(this.selectedGroupPr);
-			String[] arr = new String[res.size()];
-			arr = res.toArray(arr);
-			processData(arr);
-			return;
+			setOut(os.processData(res));
 		}
+			else
 		if (!this.symbLst.isEmpty()) {
-			processData(symbLst.split("\n"));
+			String [] as=symbLst.split("\n");		
+			setOut(os.processData(Arrays.asList(as)));
 		}
+		setReady(true);
 	}
 
 	public FormBean() {
@@ -271,125 +273,5 @@ public class FormBean {
 		this.symbLst = symbLst;
 	}
 
-	private void loadData() {
-		MongoSrv mongoSrv = new MongoSrv();
-	}
-
-	private void processData(String... symArray) {
-		LOGGER.log(Level.FINE, "processData");
-		if (!expMonthFrom.isEmpty() && expMonthTo.isEmpty()) {
-			expMonthTo = expMonthFrom;
-		}
-		callOptionsFilter.setNoStrikeBelowCurrent(noStrikeBelowCurrent
-				.equalsIgnoreCase("Y"));
-		callOptionsFilter.setNoZeroInterest(zeroint.equalsIgnoreCase("Y"));
-		if (!expMonthFrom.isEmpty()) {
-
-			LOGGER.log(Level.FINE, "Setting expMonth of filter at "
-					+ expMonthFrom);
-
-			callOptionsFilter.setExpMonthFrom(expMonthFrom);
-			callOptionsFilter.setExpMonthTo(expMonthTo);
-		}
-		readQuotes(symArray);
-		setReady(true);
-	}
-
-	public void readQuotes(String... symArray) {
-		LOGGER.log(Level.FINE, "readQuotes");
-		List<String> symbols = Arrays.asList(symArray);
-		GoogleStockReader googleStockReader = new GoogleStockReader();
-		TsxOptionsReader tsxOptionsReader = new TsxOptionsReader(putOption);
-		GoogleConverter googleConverter = new GoogleConverter();
-		GoogleStockJson googleStockJson;
-		List<StockQuote> stockQuotes = new ArrayList<StockQuote>();
-		int nbLine = 0;
-		for (String symbol : symbols) {
-			symbol = symbol.toUpperCase().trim();
-			StockQuote stockQuote = null;
-			if (symbol.endsWith(".TO")) {
-				// process symbols for TSX exchange
-				googleStockJson = googleStockReader.readStockQuote("TSE:"
-						+ symbol.replace(".TO", ""));
-				if (googleStockJson == null) {
-					msg.add("Skipping unknown TSX symbol " + symbol);
-					continue;
-				}
-				stockQuote = googleConverter.convertStock(googleStockJson);
-				stockQuote.setSymbol(googleStockJson.getSymbol() + ":"
-						+ googleStockJson.getExchange());
-				List<OptionQuote> optionQuotes = tsxOptionsReader
-						.readOptionQuote(symbol.replace(".TO", ""));
-				if (optionQuotes == null) {
-					msg.add("No option defined for TSX symbol " + symbol);
-
-					continue;
-				} else {
-					nbLine += addOptionQuote(optionQuotes, stockQuote,
-							putOption);
-				}
-			} else {
-				// process symbols for US exchanges
-				googleStockJson = googleStockReader.readStockQuote(symbol);
-				if (googleStockJson == null) {
-					msg.add("Skipping unknown US symbol " + symbol);
-					continue;
-				}
-				stockQuote = googleConverter.convertStock(googleStockJson);
-
-				List<Expiration> expirations = googleStockReader
-						.readOptionExpiration(symbol);
-				if (expirations == null) {
-					msg.add("No options defined for US symbol " + symbol);
-					continue;
-				}
-				for (Expiration expiration : expirations) {
-					GoogleOptionsJson googleOptionsJson = googleStockReader
-							.readOptionQuote(symbol, expiration);
-					List<OptionQuote> optionQuotes = googleConverter
-							.convertOption(googleOptionsJson, expiration);
-					nbLine += addOptionQuote(optionQuotes, stockQuote,
-							putOption);
-				}
-			}
-			stockQuotes.add(stockQuote);
-		}
-
-		CsvWriter csvWriter = new CsvWriter();
-		LOGGER.log(Level.FINE, "Quotes ready");
-		out = csvWriter.write(stockQuotes);
-
-	}
-
-	private int addOptionQuote(List<OptionQuote> optionQuotes,
-			StockQuote stockQuote, boolean putOption) {
-		LOGGER.log(Level.FINE, "addOptionQuote");
-		int count = 0;
-		Date prev = new Date();
-		for (OptionQuote optionQuote : optionQuotes) {
-			optionQuote.setStockPrice(stockQuote.getLast());
-			if (callOptionsFilter.filter(optionQuote, putOption)) {
-				LOGGER.log(
-						Level.FINE,
-						"expDat != prev= "
-								+ (optionQuote.getExparyDate().compareTo(prev)));
-				if (unique.equalsIgnoreCase("Y")
-						&& optionQuote.getExparyDate().compareTo(prev) != 0) {
-					LOGGER.log(Level.FINE, "Adding unique quote");
-					stockQuote.getOptionQuotes().add(optionQuote);
-					count++;
-
-				} else {
-					if (!unique.equalsIgnoreCase("Y")) {
-						LOGGER.log(Level.FINE, "Adding non unique quote");
-						stockQuote.getOptionQuotes().add(optionQuote);
-						count++;
-					}
-				}
-				prev.setTime((optionQuote.getExparyDate().getTime()));
-			}
-
-		}
-		return count;
-	}
+	
 }

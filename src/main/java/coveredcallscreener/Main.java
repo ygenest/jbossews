@@ -4,16 +4,7 @@
  */
 package coveredcallscreener;
 
-import coveredcallscreener.converters.GoogleConverter;
-import coveredcallscreener.domain.OptionQuote;
-import coveredcallscreener.domain.StockQuote;
-import coveredcallscreener.domain.json.option.Expiration;
-import coveredcallscreener.domain.json.option.GoogleOptionsJson;
-import coveredcallscreener.domain.json.stock.GoogleStockJson;
-import coveredcallscreener.filters.CallOptionsFilter;
-import coveredcallscreener.readers.GoogleStockReader;
-import coveredcallscreener.readers.TsxOptionsReader;
-import coveredcallscreener.writers.CsvWriter;
+
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -35,9 +26,13 @@ import java.util.logging.Logger;
 public class Main {
 
     private final static Logger LOGGER = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
-    static CallOptionsFilter callOptionsFilter=new CallOptionsFilter();
     
-	
+	private static boolean noStrikeBelowCurrent = false;
+	private static boolean putOption = false;
+	private static boolean unique = false;
+	private static String expMonthFrom = "";
+	private static String expMonthTo = "";
+	private static boolean zeroint = false;
 
     /**
      * @param args the command line arguments
@@ -46,8 +41,6 @@ public class Main {
         LOGGER.setLevel(Level.WARNING);
         System.out.println("Processisng...");
         boolean invalidArg = false;
-        boolean putOption = false;
-        boolean unique = false;
         String fname = null;
         for (int i = 0; i < args.length; i++) {
             if (args[i].startsWith("-")) {
@@ -56,18 +49,21 @@ public class Main {
                         LOGGER.setLevel(Level.FINE);
                         LOGGER.log(Level.FINE, "In debugging mode");
                         break;
-                    case 'e':
-                        callOptionsFilter.setExpMonthFrom(args[i].toString().substring(2));
+                    case 'f':
+                    	expMonthFrom= args[i].toString().substring(2);
+                        break;
+                    case 't':
+                    	expMonthTo= args[i].toString().substring(2);
                         break;
 
                     case 'z':
-                        callOptionsFilter.setNoZeroInterest(true);
+                        zeroint=true;
                         break;
                     case 'p':
                         putOption = true;
                         break;
                     case 's':
-                        callOptionsFilter.setNoStrikeBelowCurrent(true);
+                    	noStrikeBelowCurrent=true;
                         break;
                     case 'u':
                         unique=true;
@@ -100,60 +96,11 @@ public class Main {
         }
         // load all symbols from file
         List<String> symbols = loadData(fname);
-        GoogleStockReader googleStockReader = new GoogleStockReader();
-        TsxOptionsReader tsxOptionsReader = new TsxOptionsReader(putOption);
-        GoogleConverter googleConverter = new GoogleConverter();
-        GoogleStockJson googleStockJson;
-        List<StockQuote> stockQuotes = new ArrayList<StockQuote>();
-        int nbLine = 0;
-        for (String symbol : symbols) {
-            symbol = symbol.toUpperCase();
-            StockQuote stockQuote = null;
-            if (symbol.endsWith(".TO")) {
-                // process symbols for TSX exchange
-                googleStockJson = googleStockReader.readStockQuote("TSE:" + symbol.replace(".TO", ""));
-                stockQuote = googleConverter.convertStock(googleStockJson);
-                if (stockQuote == null) {
-                    System.out.println("Skipping unknown TSX symbol " + symbol);
-                    continue;
-                }
-                stockQuote.setSymbol(googleStockJson.getSymbol() + ":" + googleStockJson.getExchange());
+        OptionScreener os= new OptionScreener(noStrikeBelowCurrent,putOption, unique,zeroint,expMonthFrom, expMonthTo);
+        ByteArrayOutputStream out=os.processData(symbols);
 
-                List<OptionQuote> optionQuotes = tsxOptionsReader.readOptionQuote(symbol.replace(".TO", ""));
-                if (optionQuotes == null) {
-                    System.out.println("No option defined for TSX symbol " + symbol);
-                    continue;
-                } else {
-                    nbLine += addOptionQuote(optionQuotes, stockQuote, putOption);
-                }
-            } else {
-                // process symbols for US exchanges
-                googleStockJson = googleStockReader.readStockQuote(symbol);
-                if (googleStockJson == null) {
-                    System.out.println("Skipping unknown US symbol " + symbol);
-                    continue;
-                }
-                stockQuote = googleConverter.convertStock(googleStockJson);
-
-                List<Expiration> expirations = googleStockReader.readOptionExpiration(symbol);
-                if (expirations == null) {
-                    System.out.println("No option defined for US symbol " + symbol);
-                    continue;
-                }
-                for (Expiration expiration : expirations) {
-                    GoogleOptionsJson googleOptionsJson = googleStockReader.readOptionQuote(symbol, expiration);
-                    List<OptionQuote> optionQuotes = googleConverter.convertOption(googleOptionsJson, expiration);
-                    nbLine += addOptionQuote(optionQuotes, stockQuote, putOption);
-
-                }
-
-            }
-            stockQuotes.add(stockQuote);
-        }
-        CsvWriter csvWriter = new CsvWriter();
-        ByteArrayOutputStream out=csvWriter.write(stockQuotes);
         try {
-			OutputStream outputStream = new FileOutputStream ("test.csv");
+			OutputStream outputStream = new FileOutputStream (file);
 			try {
 				out.writeTo(outputStream);
 			} catch (IOException e) {
@@ -164,20 +111,10 @@ public class Main {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-        System.out.println(nbLine + " option quotes written to file " + file.getName());
+        System.out.println(" option quotes written to file " + file.getName());
     }
 
-    private static int addOptionQuote(List<OptionQuote> optionQuotes, StockQuote stockQuote, boolean putOption) {
-        int count = 0;
-        for (OptionQuote optionQuote : optionQuotes) {
-            optionQuote.setStockPrice(stockQuote.getLast());
-            if (callOptionsFilter.filter(optionQuote, putOption)) {
-                stockQuote.getOptionQuotes().add(optionQuote);
-                count++;
-            }
-        }
-        return count;
-    }
+
 
     private static List<String> loadData(String fname) {
         List<String> symbols = new ArrayList<String>();
